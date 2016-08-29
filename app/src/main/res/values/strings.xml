@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Bill Manager</string>
+
+    <string name="main_activity_title">My Subscriptions</string>
+    <string name="new_subscription_activity_title">Add Subscriptions</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="info">info</string>
+    <string name="monthly_payment">Monthly payment: $</string>
+
+    <string name="search_title">Search&#8230;</string>
+    <string name="search_hint">Search&#8230;</string>
+    <string name="no_subscriptions_yet">No subscriptions yet</string>
+    <string name="create_a_new_subscription">Add your first subscription by tapping the plus button</string>
+    <string name="app_icon_content_description">App Icon</string>
+
+
+    <string name="info_string">
+        An app for managing paid subscriptions\n\n
+        Uses library SQLiteAssetHelper: https://github.com/jgilfelt/android-sqlite-asset-helper\n\n
+        Icons from NOVA pack and Font Awesome used in respect to licenses.
+    </string>
+
+</resources>

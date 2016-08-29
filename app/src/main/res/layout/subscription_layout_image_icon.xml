@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="#aaa"
+    android:clickable="true"
+    android:longClickable="true">
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:id="@+id/icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_add_custom_subscription"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:layout_margin="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Service Name"
+        android:id="@+id/serviceName"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:id="@+id/description"
+        android:layout_below="@+id/serviceName"
+        android:layout_toEndOf="@+id/icon"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:autoText="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$Amount"
+        android:id="@+id/amount"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="16dp"
+        android:layout_above="@+id/nextPaymentDate"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Payment Date"
+        android:id="@+id/nextPaymentDate"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="16dp"
+        android:layout_alignTop="@+id/description"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:id="@+id/alarmIcon"
+        android:src="@drawable/ic_alarm"
+        android:layout_above="@+id/amount"
+        android:layout_alignEnd="@+id/amount" />
+</RelativeLayout>
