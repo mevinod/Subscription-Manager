@@ -1,5 +1,6 @@
 package com.example.brandon.SubscriptionsManager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -41,18 +42,38 @@ public class MainActivity extends AppCompatActivity {
 
         if(entriesDB.length() == 0)
         {
-            BlankDatabaseFragment firstFragment = new BlankDatabaseFragment();
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, firstFragment).commit();
+            setFragmentBlankDatabase();
         }
 
         else
         {
-            SubscriptionsFragment firstFragment = new SubscriptionsFragment();
+            setFragmentSubscriptions();
+        }
+    }
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, firstFragment).commit();
+    public void setFragmentBlankDatabase(){
+        BlankDatabaseFragment frag = new BlankDatabaseFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, frag).commit();
+    }
+
+    public void setFragmentSubscriptions(){
+        SubscriptionsFragment frag = new SubscriptionsFragment();
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, frag).commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null) {
+            Subscriptions newSubscription = (Subscriptions)
+                    data.getSerializableExtra("newSubscription");
+
+            entriesDB.insertSubscription(newSubscription);
+            setFragmentSubscriptions();
         }
     }
 
@@ -67,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar item clicks here. The acti
+        // on bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();

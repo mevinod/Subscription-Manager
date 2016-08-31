@@ -40,6 +40,14 @@
 
         </activity>
 
+        <activity
+            android:name=".CustomSubscriptionActivity"
+            android:label="@string/add_subscription_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".NewSubscriptionActivity">
+
+        </activity>
+
     </application>
 
 </manifest>

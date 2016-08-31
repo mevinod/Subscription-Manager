@@ -1,6 +1,8 @@
 package com.example.brandon.SubscriptionsManager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -15,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -109,7 +110,7 @@ public class NewSubscriptionActivity extends ActionBarActivity
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                layoutParams.setMargins(0, 0, 0, 24);
+                layoutParams.setMargins(0, 0, 0, 45);
 
                 subscriptionsContainer.addView(newView, layoutParams);
             }
@@ -119,12 +120,21 @@ public class NewSubscriptionActivity extends ActionBarActivity
             View blankView = View.inflate(this, R.layout.no_templates_found, null);
             subscriptionsContainer.addView(blankView);
         }
-
     }
 
     public void startCustomSubscriptionActivity(View view)
     {
-        Toast.makeText(NewSubscriptionActivity.this, "Would create custom subscription activity", Toast.LENGTH_SHORT).show();
+        Intent launchActivity = new Intent(this, CustomSubscriptionActivity.class);
+        startActivityForResult(launchActivity, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null) {
+            setResult(Activity.RESULT_OK, data);
+            finish();
+        }
     }
 
     public class BrandSubscriptions extends SQLiteAssetHelper

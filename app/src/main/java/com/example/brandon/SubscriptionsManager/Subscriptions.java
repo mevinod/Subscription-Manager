@@ -6,14 +6,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Subscriptions
+import java.io.Serializable;
+import java.util.Locale;
+
+public class Subscriptions implements Serializable
 {
     private String mIconText;
     private int    mIconID;
     private int    mColor;
     private String mName;
     private String mDescription;
-    private float  mAmount;
+    private double mAmount;
     private int    mBillingCycleID;
     private long   mFirstBillingDate;
     private int    mReminderID;
@@ -38,7 +41,7 @@ public class Subscriptions
         }
     };
 
-    public Subscriptions(int IconID, int color, String name, String description, float amount,
+    public Subscriptions(int IconID, int color, String name, String description, double amount,
                          billingCycle billingCycle, long firstBillingDate, reminders reminder)
     {
         mIconID           = IconID;
@@ -52,7 +55,7 @@ public class Subscriptions
         setAmount(amount);
     }
 
-    public Subscriptions(String IconText, int color, String name, String description, float amount,
+    public Subscriptions(String IconText, int color, String name, String description, double amount,
                          billingCycle billingCycle, long firstBillingDate, reminders reminder)
     {
         mIconID           = -1;
@@ -71,11 +74,22 @@ public class Subscriptions
 
         if(mIconID == -1) {
             view = View.inflate(context, R.layout.subscription_layout_text_icon, null);
+        }else{
+            view = View.inflate(context, R.layout.subscription_layout_image_icon, null);
+        }
+
+        view = fillOutView(view, font);
+
+        return view;
+    }
+
+    public View fillOutView(View view, Typeface font){
+
+        if(mIconID == -1) {
             TextView icon = ((TextView)view.findViewById(R.id.icon));
             icon.setText(mIconText);
             icon.setTypeface(font);
         }else{
-            view = View.inflate(context, R.layout.subscription_layout_image_icon, null);
             ((ImageView)view.findViewById(R.id.icon)).setImageResource(mIconID);
         }
 
@@ -139,9 +153,14 @@ public class Subscriptions
         return mDescription;
     }
 
-    public float getAmount()
+    public double getAmount()
     {
         return mAmount;
+    }
+
+    public String getAmountString()
+    {
+        return this.mAmountString;
     }
 
     public int getBillingCycleID()
@@ -181,12 +200,12 @@ public class Subscriptions
         this.mDescription = description;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(double amount) {
         this.mAmount = amount;
 
         this.mAmountString = "";
-        if(this.mAmount > 0){
-            this.mAmountString = "$"+String.valueOf(amount);
+        if(!(this.mAmount < 0)){
+            this.mAmountString = String.format(Locale.US, "$%.2f", this.mAmount);
         }
     }
 
@@ -201,4 +220,5 @@ public class Subscriptions
     public void setReminderID(int reminderID) {
         this.mReminderID = mReminderID;
     }
+
 }

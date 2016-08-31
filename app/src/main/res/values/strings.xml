@@ -20,5 +20,7 @@
         Uses library SQLiteAssetHelper: https://github.com/jgilfelt/android-sqlite-asset-helper\n\n
         Icons from NOVA pack and Font Awesome used in respect to licenses.
     </string>
+    <string name="add_subscription_title">Add subscription</string>
+    <string name="create_subscription">create subscription</string>
 
 </resources>

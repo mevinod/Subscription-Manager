@@ -95,6 +95,14 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         db.close();
     }
 
+    public void removeAt(int index){
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.delete(SUBSCRIPTIONS_TABLE_NAME, COLUMN_ID+"=?", new String[]{Integer.toString(index)});
+
+        db.close();
+    }
+
     public int length()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -102,6 +110,45 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         int length = c.getCount();
         c.close();
         return length;
+    }
+
+    public Subscriptions[] getSubscriptions()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT * FROM subscriptions", null);
+        c.moveToFirst();
+
+        int subsLength = c.getCount();
+        Subscriptions[] results = new Subscriptions[subsLength];
+
+        for(int i = 0; i < subsLength; ++i)
+        {
+            int iconID = c.getInt(c.getColumnIndex(COLUMN_ICON_IMAGE));
+
+            int color = c.getInt(c.getColumnIndex(COLUMN_COLOR));
+
+            String name = c.getString(c.getColumnIndex(COLUMN_NAME));
+            String description = c.getString(c.getColumnIndex(COLUMN_DESCRIPTION));
+
+            double amount = c.getDouble(c.getColumnIndex(COLUMN_AMOUNT));
+
+            int billingCycle = c.getInt(c.getColumnIndex(COLUMN_BILLING_CYCLE));
+            long firstBillingDate = c.getLong(c.getColumnIndex(COLUMN_BILLING_DATE));
+
+            int reminder = c.getInt(c.getColumnIndex(COLUMN_REMINDER));
+
+            results[i] = new Subscriptions(iconID, color, name, description, amount,
+                    Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
+                    Subscriptions.reminders.values()[reminder]);
+
+            c.moveToNext();
+        }
+
+        c.close();
+        db.close();
+
+        return results;
     }
 
     public float getTotalPayment()
