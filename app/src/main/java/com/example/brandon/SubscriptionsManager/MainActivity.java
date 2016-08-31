@@ -61,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
     public void setFragmentSubscriptions(){
         SubscriptionsFragment frag = new SubscriptionsFragment();
 
+        frag.setOnBecomesEmptyListener(new SubscriptionsFragment.BecomesEmptyListener() {
+            @Override
+            public void onBecomesEmpty() {
+                setFragmentBlankDatabase();
+            }
+        });
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, frag).commit();
     }

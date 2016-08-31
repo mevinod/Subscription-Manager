@@ -22,5 +22,7 @@
     </string>
     <string name="add_subscription_title">Add subscription</string>
     <string name="create_subscription">create subscription</string>
+    <string name="delete">DELETE</string>
+    <string name="cancel">CANCEL</string>
 
 </resources>

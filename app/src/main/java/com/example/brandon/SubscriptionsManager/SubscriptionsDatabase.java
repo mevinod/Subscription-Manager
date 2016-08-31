@@ -6,13 +6,27 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class SubscriptionsDatabase extends SQLiteOpenHelper
 {
+    ArrayList<DataChangeListener> listeners = new ArrayList<DataChangeListener> ();
+
+    public void setOnDataChanged (DataChangeListener listener)
+    {
+        // Store the listener object
+        this.listeners.add(listener);
+    }
+
+    public interface DataChangeListener
+    {
+        void onDataChanged(int index);
+    }
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "subscriptions.db";
-
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
+
     private static final String COLUMN_ID                = "id";
     private static final String COLUMN_COLOR             = "color";
     private static final String COLUMN_ICON_TEXT         = "icon_text";
@@ -95,12 +109,23 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         db.close();
     }
 
-    public void removeAt(int index){
+    public void removeRow(int index){
         SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
 
-        db.delete(SUBSCRIPTIONS_TABLE_NAME, COLUMN_ID+"=?", new String[]{Integer.toString(index)});
+        if(cursor.moveToPosition(index)) {
+            String rowId = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
 
+            db.delete(SUBSCRIPTIONS_TABLE_NAME, COLUMN_ID + "=?",  new String[]{rowId});
+        }
+
+        cursor.close();
         db.close();
+
+        for (DataChangeListener listener : listeners)
+        {
+            listener.onDataChanged(index);
+        }
     }
 
     public int length()
