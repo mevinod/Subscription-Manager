@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:showIn="@layout/subscription_form"
+    tools:showIn="@layout/subscription_form_template"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <ViewStub
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/viewStub"
         android:layout_gravity="center_horizontal"
-        android:layout="@layout/subscription_layout_image_icon"
+        android:layout="@layout/subscription_layout_text_icon"
         android:inflatedId="@+id/subscriptionView" />
 
     <ScrollView
@@ -28,14 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:singleLine="true"
-                    android:id="@+id/serviceName"
-                    android:hint="Name" />
 
                 <EditText
                     android:layout_width="match_parent"

@@ -22,16 +22,16 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
 
-public class NewSubscriptionActivity extends ActionBarActivity
-{
+public class NewSubscriptionActivity extends ActionBarActivity {
     Typeface fontAwesome = null;
 
     private Subscriptions[] brandSubscriptions;
+
+    private Subscriptions[] displayedSubscriptions;
     private LinearLayout subscriptionsContainer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_subscription_activity);
 
@@ -50,30 +50,33 @@ public class NewSubscriptionActivity extends ActionBarActivity
 
         BrandSubscriptions brandSubscriptionsDB = new BrandSubscriptions(this);
         brandSubscriptions = brandSubscriptionsDB.getSubscriptions();
+        displayedSubscriptions = brandSubscriptions.clone();
 
         fillSubscriptionsInActivity(brandSubscriptions);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_new_subscription, menu);
 
         SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(
-            new SearchView.OnQueryTextListener()
-            {
+            new SearchView.OnQueryTextListener() {
                 @Override
-                public boolean onQueryTextSubmit(String query)
-                {
-                    fillSubscriptionsInActivity(searchBrandSubscriptions(query));
+                public boolean onQueryTextSubmit(String query) {
+                    Subscriptions[] results = searchBrandSubscriptions(query);
+                    if(!Subscriptions.checkArraysEqual(results, displayedSubscriptions)) {
+                        fillSubscriptionsInActivity(results);
+                    }
                     return false;
                 }
 
                 @Override
-                public boolean onQueryTextChange(String query)
-                {
-                    fillSubscriptionsInActivity(searchBrandSubscriptions(query));
+                public boolean onQueryTextChange(String query) {
+                    Subscriptions[] results = searchBrandSubscriptions(query);
+                    if(!Subscriptions.checkArraysEqual(results, displayedSubscriptions)) {
+                        fillSubscriptionsInActivity(results);
+                    }
                     return false;
                 }
             }
@@ -82,15 +85,12 @@ public class NewSubscriptionActivity extends ActionBarActivity
         return true;
     }
 
-    public Subscriptions[] searchBrandSubscriptions(String query)
-    {
+    public Subscriptions[] searchBrandSubscriptions(String query) {
         ArrayList<Subscriptions> results = new ArrayList<Subscriptions>();
 
-        for(Subscriptions subscription: brandSubscriptions)
-        {
+        for(Subscriptions subscription: brandSubscriptions) {
             String name = subscription.getName().toLowerCase();
-            if(name.contains(query.toLowerCase()))
-            {
+            if(name.contains(query.toLowerCase())) {
                 results.add(subscription);
             }
         }
@@ -98,15 +98,20 @@ public class NewSubscriptionActivity extends ActionBarActivity
         return results.toArray(new Subscriptions[results.size()]);
     }
 
-    public void fillSubscriptionsInActivity(Subscriptions[] subscriptions)
-    {
+    public void fillSubscriptionsInActivity(Subscriptions[] subscriptions) {
+        displayedSubscriptions = subscriptions.clone();
         subscriptionsContainer.removeAllViews();
 
-        if(subscriptions.length != 0)
-        {
-            for (Subscriptions subscription : subscriptions)
-            {
+        if(subscriptions.length != 0) {
+            for (Subscriptions subscription : subscriptions) {
                 View newView = subscription.getView(this, fontAwesome);
+
+                newView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startTemplateSubscriptionActivity(view);
+                    }
+                });
 
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -115,16 +120,27 @@ public class NewSubscriptionActivity extends ActionBarActivity
                 subscriptionsContainer.addView(newView, layoutParams);
             }
         }
-        else
-        {
+        else {
             View blankView = View.inflate(this, R.layout.no_templates_found, null);
             subscriptionsContainer.addView(blankView);
         }
     }
 
-    public void startCustomSubscriptionActivity(View view)
-    {
+    public void startCustomSubscriptionActivity(View view) {
         Intent launchActivity = new Intent(this, CustomSubscriptionActivity.class);
+        startActivityForResult(launchActivity, 0);
+    }
+
+    public void startTemplateSubscriptionActivity(View view){
+        Intent launchActivity = new Intent(NewSubscriptionActivity.this,
+                TemplateSubscriptionActivity.class);
+
+        int index = subscriptionsContainer.indexOfChild(view);
+
+        Subscriptions templateSubscription = displayedSubscriptions[index];
+        templateSubscription.setAmount(0f);
+
+        launchActivity.putExtra("subscription", templateSubscription);
         startActivityForResult(launchActivity, 0);
     }
 
@@ -137,20 +153,16 @@ public class NewSubscriptionActivity extends ActionBarActivity
         }
     }
 
-    public class BrandSubscriptions extends SQLiteAssetHelper
-    {
+    public class BrandSubscriptions extends SQLiteAssetHelper {
 
         private static final String DATABASE_NAME = "BrandSubscriptions.sql";
         private static final int DATABASE_VERSION = 1;
 
-        public BrandSubscriptions(Context context)
-        {
+        public BrandSubscriptions(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        public Subscriptions[] getSubscriptions()
-        {
-
+        public Subscriptions[] getSubscriptions() {
             SQLiteDatabase db = getReadableDatabase();
 
             Cursor c = db.rawQuery("SELECT * FROM subscriptions", null);
@@ -159,8 +171,7 @@ public class NewSubscriptionActivity extends ActionBarActivity
             int subsLength = c.getCount();
             Subscriptions[] results = new Subscriptions[subsLength];
 
-            for(int i = 0; i < subsLength; ++i)
-            {
+            for(int i = 0; i < subsLength; ++i) {
                 String name = c.getString(c.getColumnIndex("name"));
 
                 String colorString = c.getString(c.getColumnIndex("color"));

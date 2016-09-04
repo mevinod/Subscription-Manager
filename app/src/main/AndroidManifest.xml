@@ -16,7 +16,7 @@
         android:fullBackupContent="false">
 
         <activity
-            android:name="com.example.brandon.SubscriptionsManager.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/main_activity_title"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name="com.example.brandon.SubscriptionsManager.NewSubscriptionActivity"
+            android:name=".NewSubscriptionActivity"
             android:label="@string/new_subscription_activity_title"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName="com.example.brandon.SubscriptionsManager.MainActivity">
@@ -43,12 +43,26 @@
         </activity>
 
         <activity
+            android:name=".EditSubscriptionActivity"
+            android:label="@string/edit_subscription_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
             android:name=".CustomSubscriptionActivity"
             android:label="@string/add_subscription_title"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".NewSubscriptionActivity">
-
         </activity>
+
+        <activity
+            android:name=".TemplateSubscriptionActivity"
+            android:label="@string/add_subscription_title"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".NewSubscriptionActivity">
+        </activity>
+
 
     </application>
 

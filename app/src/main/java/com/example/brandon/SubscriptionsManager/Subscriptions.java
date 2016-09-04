@@ -2,6 +2,7 @@ package com.example.brandon.SubscriptionsManager;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,8 +10,7 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.Locale;
 
-public class Subscriptions implements Serializable
-{
+public class Subscriptions implements Serializable {
     private String mIconText;
     private int    mIconID;
     private int    mColor;
@@ -88,6 +88,7 @@ public class Subscriptions implements Serializable
         if(mIconID == -1) {
             TextView icon = ((TextView)view.findViewById(R.id.icon));
             icon.setText(mIconText);
+            Log.e("text", mIconText);
             icon.setTypeface(font);
         }else{
             ((ImageView)view.findViewById(R.id.icon)).setImageResource(mIconID);
@@ -114,9 +115,36 @@ public class Subscriptions implements Serializable
         if((mReminderID == reminders.NEVER.value))
         { // If the reminder is set to never, make the alarm icon go away.
             view.findViewById(R.id.alarmIcon).setVisibility(View.GONE);
+        }else{
+            view.findViewById(R.id.alarmIcon).setVisibility(View.VISIBLE);
         }
 
         return view;
+    }
+
+    public boolean equals(Subscriptions subscription){
+        boolean equal;
+        equal  = (this.mIconID           == subscription.getIconID());
+        equal &= this.mIconText.equals(subscription.getIconText());
+        equal &= (this.mColor            == subscription.getColor());
+        equal &= this.mName.equals(subscription.getName());
+        equal &= this.mDescription.equals(subscription.getDescription());
+        equal &= (this.mBillingCycleID   == subscription.getBillingCycleID());
+        equal &= (this.mFirstBillingDate == subscription.getFirstBillingDate());
+        equal &= (this.mReminderID       == subscription.getReminderID());
+        return equal;
+    }
+
+    public static boolean checkArraysEqual(Subscriptions[] arryOne, Subscriptions[] arryTwo){
+        boolean equal = (arryOne.length == arryTwo.length);
+        if(equal){
+            for(int sub = 0; sub < arryOne.length; ++sub){
+                if(!arryOne[sub].equals(arryTwo[sub])) {
+                    return false;
+                }
+            }
+        }
+        return equal;
     }
 
     private String getNextPaymentString()
@@ -218,7 +246,7 @@ public class Subscriptions implements Serializable
     }
 
     public void setReminderID(int reminderID) {
-        this.mReminderID = mReminderID;
+        this.mReminderID = reminderID;
     }
 
 }

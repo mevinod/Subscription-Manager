@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/custom_subscription_toolbar"
+            android:id="@+id/edit_subscription_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -23,7 +23,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/subscription_form_content"/>
-
+    <include layout="@layout/subscription_form_content_image"/>
 
 </android.support.design.widget.CoordinatorLayout>

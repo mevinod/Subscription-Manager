@@ -8,22 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-public class SubscriptionsDatabase extends SQLiteOpenHelper
-{
-    ArrayList<DataChangeListener> listeners = new ArrayList<DataChangeListener> ();
+public class SubscriptionsDatabase extends SQLiteOpenHelper {
+    static ArrayList<DataChangeListener> listeners = new ArrayList<DataChangeListener> ();
 
-    public void setOnDataChanged (DataChangeListener listener)
-    {
-        // Store the listener object
-        this.listeners.add(listener);
-    }
-
-    public interface DataChangeListener
-    {
-        void onDataChanged(int index);
-    }
-
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "subscriptions.db";
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
 
@@ -52,27 +40,32 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
             COLUMN_REMINDER      + " INTEGER "  +
             ");";
 
-    public SubscriptionsDatabase(Context context)
-    {
+    public SubscriptionsDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public void setOnDataChanged (DataChangeListener listener) {
+        // Store the listener object
+        listeners.add(listener);
+    }
+
+    public interface DataChangeListener {
+        void onDataChanged();
+    }
+
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase)
-    {
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(SUBSCRIPTIONS_TABLE_CREATE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
-    {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SUBSCRIPTIONS_TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 
     @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIPTIONS_TABLE_NAME);
         onCreate(db);
     }
@@ -82,18 +75,14 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         return DATABASE_NAME;
     }
 
-    public void clearDatabase()
-    {
+    public void clearDatabase() {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIPTIONS_TABLE_NAME);
         onCreate(db);
         db.close();
     }
 
-    public void insertSubscription(Subscriptions entry)
-    {
-        SQLiteDatabase db = getWritableDatabase();
-
+    private ContentValues getContentValuesForSubscription(Subscriptions entry){
         ContentValues values = new ContentValues();
         values.put(COLUMN_ICON_IMAGE,    entry.getIconID());
         values.put(COLUMN_ICON_TEXT,     entry.getIconText());
@@ -105,11 +94,21 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         values.put(COLUMN_BILLING_DATE,  entry.getFirstBillingDate());
         values.put(COLUMN_REMINDER,      entry.getReminderID());
 
-        db.insert(SUBSCRIPTIONS_TABLE_NAME, null, values);
-        db.close();
+        return values;
     }
 
-    public void removeRow(int index){
+    public void insertSubscription(Subscriptions entry) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = getContentValuesForSubscription(entry);
+
+        db.insert(SUBSCRIPTIONS_TABLE_NAME, null, values);
+        db.close();
+
+        notifyDataChange();
+    }
+
+    public void removeRow(int index) {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
 
@@ -122,14 +121,28 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         cursor.close();
         db.close();
 
-        for (DataChangeListener listener : listeners)
-        {
-            listener.onDataChanged(index);
-        }
+        notifyDataChange();
     }
 
-    public int length()
-    {
+    public void replaceSubscription(Subscriptions entry, int index) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
+
+        ContentValues values = getContentValuesForSubscription(entry);
+
+        if(cursor.moveToPosition(index)) {
+            String rowId = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+
+            db.update(SUBSCRIPTIONS_TABLE_NAME, values, COLUMN_ID + "=?",  new String[]{rowId});
+        }
+
+        cursor.close();
+        db.close();
+
+        notifyDataChange();
+    }
+
+    public int length() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM " +  SUBSCRIPTIONS_TABLE_NAME, null);
         int length = c.getCount();
@@ -137,8 +150,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         return length;
     }
 
-    public Subscriptions[] getSubscriptions()
-    {
+    public Subscriptions[] getSubscriptions() {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor c = db.rawQuery("SELECT * FROM subscriptions", null);
@@ -147,9 +159,9 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         int subsLength = c.getCount();
         Subscriptions[] results = new Subscriptions[subsLength];
 
-        for(int i = 0; i < subsLength; ++i)
-        {
+        for(int i = 0; i < subsLength; ++i) {
             int iconID = c.getInt(c.getColumnIndex(COLUMN_ICON_IMAGE));
+            String iconText = c.getString(c.getColumnIndex(COLUMN_ICON_TEXT));
 
             int color = c.getInt(c.getColumnIndex(COLUMN_COLOR));
 
@@ -163,9 +175,15 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
 
             int reminder = c.getInt(c.getColumnIndex(COLUMN_REMINDER));
 
-            results[i] = new Subscriptions(iconID, color, name, description, amount,
-                    Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
-                    Subscriptions.reminders.values()[reminder]);
+            if(iconID != -1) {
+                results[i] = new Subscriptions(iconID, color, name, description, amount,
+                        Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
+                        Subscriptions.reminders.values()[reminder]);
+            } else {
+                results[i] = new Subscriptions(iconText, color, name, description, amount,
+                        Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
+                        Subscriptions.reminders.values()[reminder]);
+            }
 
             c.moveToNext();
         }
@@ -176,16 +194,14 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         return results;
     }
 
-    public float getTotalPayment()
-    {
+    public float getTotalPayment() {
         SQLiteDatabase db = getReadableDatabase();
         float total = 0;
 
         Cursor c = db.rawQuery("SELECT * FROM " + SUBSCRIPTIONS_TABLE_NAME, null);
         c.moveToFirst();
 
-        while(!c.isAfterLast())
-        {
+        while(!c.isAfterLast()) {
             total += c.getFloat(c.getColumnIndex(COLUMN_AMOUNT));
             c.moveToNext();
         }
@@ -193,5 +209,11 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper
         c.close();
         db.close();
         return total;
+    }
+
+    public void notifyDataChange(){
+        for (DataChangeListener listener : listeners) {
+            listener.onDataChanged();
+        }
     }
 }
