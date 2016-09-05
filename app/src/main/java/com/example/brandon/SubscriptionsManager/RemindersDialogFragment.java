@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.ArrayAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class RemindersDialogFragment extends DialogFragment {
         void onFinishedWithResult(int index, String name);
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

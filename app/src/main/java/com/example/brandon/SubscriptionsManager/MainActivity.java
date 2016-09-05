@@ -57,15 +57,19 @@ public class MainActivity extends AppCompatActivity {
             setFragmentSubscriptions();
         }
 
-        if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null) {
-//            setFragmentSubscriptions();
-
-            Subscriptions newSubscription = (Subscriptions)
-                    data.getSerializableExtra("subscription");
-
+        if (requestCode == 1 && data != null) {
             int index = data.getIntExtra("index", -1);
 
-            entriesDB.replaceSubscription(newSubscription, index);
+            if(resultCode == Activity.RESULT_OK) {
+                Subscriptions newSubscription = (Subscriptions)
+                        data.getSerializableExtra("subscription");
+
+                entriesDB.replaceSubscription(newSubscription, index);
+            }
+
+            else if(resultCode == Activity.RESULT_CANCELED){
+                entriesDB.removeRow(index);
+            }
         }
     }
 

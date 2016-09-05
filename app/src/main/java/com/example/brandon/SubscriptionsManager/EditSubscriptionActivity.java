@@ -27,7 +27,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.subscription_form_custom);
+//        setContentView(R.layout.subscription_form_custom);
 
         Bundle args = getIntent().getExtras();
         subscription = (Subscriptions)args.getSerializable("subscription");
@@ -202,6 +202,22 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         finish();
     }
 
+    public void deleteSubscription(View view) {
+        final SubscriptionsDatabase entriesDB = new SubscriptionsDatabase(this);
+
+        DeleteSubscriptionDialog deleteDialog = new DeleteSubscriptionDialog(this, index);
+        deleteDialog.setOnDeleteClickedListener(new DeleteSubscriptionDialog.OnDeleteClicked() {
+            @Override
+            public void onDeleteClicked(int index) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("index", index);
+                setResult(Activity.RESULT_CANCELED, resultIntent);
+                finish();
+            }
+        });
+
+        deleteDialog.show();
+    }
 }
 
 

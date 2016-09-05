@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.Locale;
@@ -32,6 +33,9 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+
+        Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
+        deleteSubscription.setVisibility(View.GONE);
 
         final EditText serviceName = (EditText)findViewById(R.id.serviceName);
         serviceName.addTextChangedListener(new TextWatcher() {

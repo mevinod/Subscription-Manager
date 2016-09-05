@@ -1,13 +1,11 @@
 package com.example.brandon.SubscriptionsManager;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +98,17 @@ public class SubscriptionsFragment extends Fragment {
                 @Override
                 public boolean onLongClick(View view) {
                     int index = subscriptionsContainer.indexOfChild(view);
-                    new DeleteSubscriptionDialog(context, index).show();
+
+                    DeleteSubscriptionDialog deleteDialog = new DeleteSubscriptionDialog(context, index);
+                    deleteDialog.setOnDeleteClickedListener(new DeleteSubscriptionDialog.OnDeleteClicked() {
+                        @Override
+                        public void onDeleteClicked(int index) {
+                            entriesDB.removeRow(index);
+                        }
+                    });
+
+                    deleteDialog.show();
+
                     Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                     v.vibrate(10);
 
@@ -124,49 +132,6 @@ public class SubscriptionsFragment extends Fragment {
         }
 
         return results;
-    }
-
-    public class DeleteSubscriptionDialog extends AlertDialog.Builder {
-        Context context;
-        int index;
-        AlertDialog dialog;
-
-        public DeleteSubscriptionDialog(Context context, int index){
-            super(context);
-            this.context = context;
-            this.index = index;
-        }
-
-        @Override
-        public AlertDialog show() {
-            super.show();
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(getResources().getColor(R.color.red));
-
-            return dialog;
-        }
-
-        @Override
-        public AlertDialog create() {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Subscription will be deleted")
-                    .setTitle("Are you sure?")
-                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            entriesDB.removeRow(index);
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-
-                        }
-                    });
-
-            dialog = builder.create();
-
-            return dialog;
-        }
     }
 
     public void fillSubscriptionsInActivity(View[] subscriptions) {

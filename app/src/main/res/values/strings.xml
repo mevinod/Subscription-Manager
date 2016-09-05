@@ -26,6 +26,7 @@
     <string name="cancel">CANCEL</string>
     <string name="edit_subscription_title">Edit subscription</string>
     <string name="okay">OK</string>
+    <string name="delete_subscription">DELETE SUBSCRIPTION</string>
 
     <string-array name="billing_cycles">
         <item>Weekly</item>
