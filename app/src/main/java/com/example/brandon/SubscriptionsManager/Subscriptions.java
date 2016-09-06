@@ -174,7 +174,7 @@ public class Subscriptions implements Serializable {
         if(todaysDate <= targetDate){
             nextPayment = getDateDistance(todaysDate, targetDate);
         }
-        else if(billCycle == billingCycle.WEEKLY){
+        else if(billCycle == billingCycle.WEEKLY){ 
 //            nextPayment = getDateDistance(todaysDate, targetDate + week);
         }
         else if(billCycle == billCycle.MONTHLY){
