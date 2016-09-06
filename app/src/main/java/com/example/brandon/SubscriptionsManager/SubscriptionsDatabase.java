@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 
 public class SubscriptionsDatabase extends SQLiteOpenHelper {
-    static ArrayList<DataChangeListener> listeners = new ArrayList<DataChangeListener> ();
+    static ArrayList<DataChangeListener> listeners = new ArrayList<> ();
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "subscriptions.db";
@@ -202,7 +202,23 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         c.moveToFirst();
 
         while(!c.isAfterLast()) {
-            total += c.getFloat(c.getColumnIndex(COLUMN_AMOUNT));
+            float monthlyPayment = c.getFloat(c.getColumnIndex(COLUMN_AMOUNT));
+
+            int billingCycleId = c.getInt(c.getColumnIndex(COLUMN_BILLING_CYCLE));
+            Subscriptions.billingCycle billingCycle =
+                    Subscriptions.billingCycle.values()[billingCycleId];
+
+            if(billingCycle == Subscriptions.billingCycle.WEEKLY){
+                monthlyPayment *= 4;
+            }
+            else if(billingCycle == Subscriptions.billingCycle.QUARTERLY){
+                monthlyPayment /= 4;
+            }
+            else if(billingCycle == Subscriptions.billingCycle.YEARLY){
+                monthlyPayment /= 12;
+            }
+
+            total += monthlyPayment;
             c.moveToNext();
         }
 

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class SubscriptionsFragment extends Fragment {
@@ -71,8 +72,9 @@ public class SubscriptionsFragment extends Fragment {
 
     public void updateSubscriptionsFragment() {
         if(isAdded()) {
-            String newText = getResources().getString(R.string.monthly_payment) +
-                    String.valueOf(entriesDB.getTotalPayment());
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            String payment = decimalFormat.format(entriesDB.getTotalPayment());
+            String newText = getResources().getString(R.string.monthly_payment) + payment;
 
             TextView paymentTextView = (TextView) mainView.findViewById(R.id.paymentTextView);
             paymentTextView.setText(newText);

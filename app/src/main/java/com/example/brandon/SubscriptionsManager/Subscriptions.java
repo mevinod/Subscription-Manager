@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Subscriptions implements Serializable {
@@ -26,7 +28,7 @@ public class Subscriptions implements Serializable {
     public enum billingCycle{
         WEEKLY(0), MONTHLY(1), QUARTERLY(2), YEARLY(3);
 
-        int value;
+        final int value;
         billingCycle(int value){
             this.value = value;
         }
@@ -42,8 +44,7 @@ public class Subscriptions implements Serializable {
     };
 
     public Subscriptions(int IconID, int color, String name, String description, double amount,
-                         billingCycle billingCycle, long firstBillingDate, reminders reminder)
-    {
+                         billingCycle billingCycle, long firstBillingDate, reminders reminder) {
         mIconID           = IconID;
         mIconText         = "";
         mColor            = color;
@@ -56,8 +57,7 @@ public class Subscriptions implements Serializable {
     }
 
     public Subscriptions(String IconText, int color, String name, String description, double amount,
-                         billingCycle billingCycle, long firstBillingDate, reminders reminder)
-    {
+                         billingCycle billingCycle, long firstBillingDate, reminders reminder) {
         mIconID           = -1;
         mIconText         = IconText;
         mColor            = color;
@@ -147,13 +147,74 @@ public class Subscriptions implements Serializable {
         return equal;
     }
 
-    private String getNextPaymentString()
-    {
+    private String getNextPaymentString() {
         String nextPayment = "";
 
-        // TODO From the first billing date, and the billing cycle, calculate the next payment string
+        /* TODO From the first billing date, and the billing cycle, also relative to the current date
+         calculate the next payment string */
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long todaysDate = calendar.getTimeInMillis();
+
+        Calendar target = Calendar.getInstance();
+        target.setTimeInMillis(mFirstBillingDate);
+        long targetDate = mFirstBillingDate;
+
+        billingCycle billCycle = billingCycle.values()[mBillingCycleID];
+
+        long day = 1000 * 60 * 60 * 24;
+        long week = day * 7;
+        long month = day * 30;
+        long year = month * 12;
+
+        if(todaysDate <= targetDate){
+            nextPayment = getDateDistance(todaysDate, targetDate);
+        }
+        else if(billCycle == billingCycle.WEEKLY){
+//            nextPayment = getDateDistance(todaysDate, targetDate + week);
+        }
+        else if(billCycle == billCycle.MONTHLY){
+//            nextPayment = getDateDistance(todaysDate, targetDate + month);
+        }
+        else if(billCycle == billCycle.QUARTERLY){
+//            nextPayment = getDateDistance(todaysDate, targetDate + (month * 3));
+        }
+        else if(billCycle == billCycle.YEARLY){
+//            nextPayment = getDateDistance(todaysDate, targetDate + year);
+        }
 
         return nextPayment;
+    }
+
+    private String getDateDistance(long startDate, long endDate){
+        String dateString = "";
+
+        long deltaDate = endDate - startDate;
+        int days = (int) (deltaDate / (1000*60*60*24));
+
+        switch (days){
+            case(0):
+                dateString = "TODAY";
+                break;
+            case(1):
+                dateString = "TOMORROW";
+                break;
+            default:
+                int months = days / 30;
+                if(months > 0){
+                    dateString = String.format(Locale.US, "IN %d MONTHS", months);
+                }
+                else{
+                    dateString = String.format(Locale.US, "IN %d DAYS", days);
+                }
+                break;
+        }
+
+        return dateString;
     }
 
     // GETTERS
@@ -191,14 +252,38 @@ public class Subscriptions implements Serializable {
         return this.mAmountString;
     }
 
+
+    public String getBillingCycleString(Context context){
+        String[] billingCycles = context.getResources().getStringArray(R.array.billing_cycles);
+        return billingCycles[getBillingCycleID()];
+    }
+
     public int getBillingCycleID()
     {
         return mBillingCycleID;
     }
 
+    public String getFirstBillingDateString(Context context){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(getFirstBillingDate());
+
+        int month = c.get(Calendar.MONTH);
+        int day   = c.get(Calendar.DAY_OF_MONTH);
+        int year  = c.get(Calendar.YEAR);
+
+        String monthString = context.getResources().getStringArray(R.array.month_names)[month];
+
+        return String.format(Locale.US, "%s %d, %d", monthString, day, year);
+    }
+
     public long getFirstBillingDate()
     {
         return mFirstBillingDate;
+    }
+
+    public String getReminderString(Context context){
+        String[] reminders = context.getResources().getStringArray(R.array.reminders);
+        return reminders[getReminderID()];
     }
 
     public int getReminderID()
@@ -233,9 +318,11 @@ public class Subscriptions implements Serializable {
 
         this.mAmountString = "";
         if(!(this.mAmount < 0)){
-            this.mAmountString = String.format(Locale.US, "$%.2f", this.mAmount);
+            DecimalFormat decimalFormat = new DecimalFormat("$#,###.##");
+            this.mAmountString = decimalFormat.format(amount);
         }
     }
+
 
     public void setBillingCycleID(int billingCycleID) {
         this.mBillingCycleID = billingCycleID;
@@ -248,5 +335,4 @@ public class Subscriptions implements Serializable {
     public void setReminderID(int reminderID) {
         this.mReminderID = reminderID;
     }
-
 }

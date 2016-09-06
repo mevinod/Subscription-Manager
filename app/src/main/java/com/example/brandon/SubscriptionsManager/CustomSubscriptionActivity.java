@@ -15,9 +15,11 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class CustomSubscriptionActivity extends ActionBarActivity {
+
     private Subscriptions newSubscription;
 
     private View     subscription;
@@ -36,6 +38,9 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
 
         Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
         deleteSubscription.setVisibility(View.GONE);
+
+        newSubscription = new Subscriptions(R.drawable.ic_add, getResources().getColor(R.color.black),
+                "", "", 0f, Subscriptions.billingCycle.MONTHLY, today(), Subscriptions.reminders.NEVER);
 
         final EditText serviceName = (EditText)findViewById(R.id.serviceName);
         serviceName.addTextChangedListener(new TextWatcher() {
@@ -76,6 +81,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         });
 
         final EditText amount = (EditText)findViewById(R.id.amount);
+        amount.setText(newSubscription.getAmountString());
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -84,15 +90,19 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                float value = 0;
-                try{
-                    if(charSequence.charAt(0) != '$'){
-                        value = Float.parseFloat(charSequence.toString());
-                        newSubscription.setAmount(value);
-                        newSubscription.fillOutView(subscription, fontAwesome);
+                if(charSequence.length() != 0) {
+                    try {
+                        if (charSequence.charAt(0) != '$') {
+                            float value = Float.parseFloat(charSequence.toString());
+                            newSubscription.setAmount(value);
+                            newSubscription.fillOutView(subscription, fontAwesome);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }catch(Exception e){
-                    e.printStackTrace();
+                }else{
+                    newSubscription.setAmount(0);
+                    newSubscription.fillOutView(subscription, fontAwesome);
                 }
             }
 
@@ -170,11 +180,12 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         ViewStub subscriptionStubView = (ViewStub)findViewById(R.id.viewStub);
         subscription = subscriptionStubView.inflate();
 
-        newSubscription = new Subscriptions(R.drawable.ic_add, getResources().getColor(R.color.black),
-                "", "", 0f, Subscriptions.billingCycle.MONTHLY, 0, Subscriptions.reminders.NEVER);
-
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         newSubscription.fillOutView(subscription, fontAwesome);
+    }
+
+    private long today(){
+        return Calendar.getInstance().getTimeInMillis();
     }
 
     @Override

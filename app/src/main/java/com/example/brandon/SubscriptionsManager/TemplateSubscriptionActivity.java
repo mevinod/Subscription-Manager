@@ -15,9 +15,11 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class TemplateSubscriptionActivity extends ActionBarActivity {
+
     private Subscriptions newSubscription;
 
     private View     subscription;
@@ -36,6 +38,10 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
         deleteSubscription.setVisibility(View.GONE);
+
+        Bundle extras = getIntent().getExtras();
+        newSubscription = (Subscriptions)extras.getSerializable("subscription");
+        newSubscription.setFirstBillingDate(today());
 
         final EditText description = (EditText)findViewById(R.id.description);
         description.addTextChangedListener(new TextWatcher() {
@@ -57,6 +63,7 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
         });
 
         final EditText amount = (EditText)findViewById(R.id.amount);
+        amount.setText(newSubscription.getAmountString());
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -65,19 +72,36 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                float value = 0;
-                try{
-                    value = Float.parseFloat(charSequence.toString());
-                }catch(Exception e){
-                    e.printStackTrace();
+                if(charSequence.length() != 0) {
+                    try {
+                        if (charSequence.charAt(0) != '$') {
+                            float value = Float.parseFloat(charSequence.toString());
+                            newSubscription.setAmount(value);
+                            newSubscription.fillOutView(subscription, fontAwesome);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    newSubscription.setAmount(0);
+                    newSubscription.fillOutView(subscription, fontAwesome);
                 }
-                newSubscription.setAmount(value);
-                newSubscription.fillOutView(subscription, fontAwesome);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
+            }
+        });
+
+        amount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    amount.setText(newSubscription.getAmountString());
+                }else{
+                    amount.setText(String.format(Locale.US, "%.2f", newSubscription.getAmount()));
+                }
             }
         });
 
@@ -138,11 +162,12 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
         ViewStub subscriptionStubView = (ViewStub)findViewById(R.id.viewStub);
         subscription = subscriptionStubView.inflate();
 
-        Bundle extras = getIntent().getExtras();
-        newSubscription = (Subscriptions)extras.getSerializable("subscription");
-
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         newSubscription.fillOutView(subscription, fontAwesome);
+    }
+
+    private long today(){
+        return Calendar.getInstance().getTimeInMillis();
     }
 
     @Override

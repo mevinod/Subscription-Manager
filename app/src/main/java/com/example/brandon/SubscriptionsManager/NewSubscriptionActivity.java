@@ -105,6 +105,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         if(subscriptions.length != 0) {
             for (Subscriptions subscription : subscriptions) {
                 View newView = subscription.getView(this, fontAwesome);
+                newView.findViewById(R.id.nextPaymentDate).setVisibility(View.GONE);
 
                 newView.setOnClickListener(new View.OnClickListener() {
                     @Override

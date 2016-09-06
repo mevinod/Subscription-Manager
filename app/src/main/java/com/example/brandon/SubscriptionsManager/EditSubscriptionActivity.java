@@ -27,7 +27,6 @@ public class EditSubscriptionActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.subscription_form_custom);
 
         Bundle args = getIntent().getExtras();
         subscription = (Subscriptions)args.getSerializable("subscription");
@@ -43,6 +42,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                 setContentView(R.layout.subscription_form_custom);
 
                 final EditText serviceName = (EditText)findViewById(R.id.serviceName);
+                serviceName.setText(subscription.getName());
                 serviceName.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -63,6 +63,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
             }
 
             final EditText description = (EditText)findViewById(R.id.description);
+            description.setText(subscription.getDescription());
             description.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -82,6 +83,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
             });
 
             final EditText amount = (EditText)findViewById(R.id.amount);
+            amount.setText(subscription.getAmountString());
             amount.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -90,15 +92,19 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    float value = 0;
-                    try{
-                        if(charSequence.charAt(0) != '$'){
-                            value = Float.parseFloat(charSequence.toString());
-                            subscription.setAmount(value);
-                            subscription.fillOutView(subscriptionView, fontAwesome);
+                    if(charSequence.length() != 0) {
+                        try {
+                            if (charSequence.charAt(0) != '$') {
+                                float value = Float.parseFloat(charSequence.toString());
+                                subscription.setAmount(value);
+                                subscription.fillOutView(subscriptionView, fontAwesome);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    }catch(Exception e){
-                        e.printStackTrace();
+                    }else{
+                        subscription.setAmount(0);
+                        subscription.fillOutView(subscriptionView, fontAwesome);
                     }
                 }
 
@@ -120,6 +126,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
             });
 
             final EditText billingCycle = (EditText)findViewById(R.id.billingCycle);
+            billingCycle.setText(subscription.getBillingCycleString(this));
             billingCycle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -137,6 +144,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
             });
 
             final EditText firstBillingDate = (EditText)findViewById(R.id.firstBillingDate);
+            firstBillingDate.setText(subscription.getFirstBillingDateString(this));
             firstBillingDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -157,6 +165,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
             });
 
             final EditText reminders = (EditText)findViewById(R.id.reminders);
+            reminders.setText(subscription.getReminderString(this));
             reminders.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
