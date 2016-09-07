@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class SubscriptionsDatabase extends SQLiteOpenHelper {
     static ArrayList<DataChangeListener> listeners = new ArrayList<> ();
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "subscriptions.db";
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
 
@@ -24,20 +24,22 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_AMOUNT            = "amount";
     private static final String COLUMN_BILLING_CYCLE     = "billing_cycle";
     private static final String COLUMN_BILLING_DATE      = "billing_date";
+    private static final String COLUMN_NEXT_BILLING_DATE = "next_billing_date";
     private static final String COLUMN_REMINDER          = "reminder";
 
     private static final String SUBSCRIPTIONS_TABLE_CREATE = "CREATE TABLE " +
             SUBSCRIPTIONS_TABLE_NAME + " (" +
             COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUMN_COLOR         + " INTEGER, " +
-            COLUMN_ICON_TEXT     + " TEXT, "    +
-            COLUMN_ICON_IMAGE    + " INTEGER, " +
-            COLUMN_NAME          + " TEXT, "    +
-            COLUMN_DESCRIPTION   + " TEXT, "    +
-            COLUMN_AMOUNT        + " DECIMAL, " +
-            COLUMN_BILLING_CYCLE + " INTEGER, " +
-            COLUMN_BILLING_DATE  + " INTEGER, " +
-            COLUMN_REMINDER      + " INTEGER "  +
+            COLUMN_COLOR              + " INTEGER, " +
+            COLUMN_ICON_TEXT          + " TEXT, "    +
+            COLUMN_ICON_IMAGE         + " INTEGER, " +
+            COLUMN_NAME               + " TEXT, "    +
+            COLUMN_DESCRIPTION        + " TEXT, "    +
+            COLUMN_AMOUNT             + " DECIMAL, " +
+            COLUMN_BILLING_CYCLE      + " INTEGER, " +
+            COLUMN_BILLING_DATE       + " INTEGER, " +
+            COLUMN_NEXT_BILLING_DATE  + " INTEGER, " +
+            COLUMN_REMINDER           + " INTEGER "  +
             ");";
 
     public SubscriptionsDatabase(Context context) {
@@ -84,15 +86,16 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
     private ContentValues getContentValuesForSubscription(Subscriptions entry){
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ICON_IMAGE,    entry.getIconID());
-        values.put(COLUMN_ICON_TEXT,     entry.getIconText());
-        values.put(COLUMN_COLOR,         entry.getColor());
-        values.put(COLUMN_NAME,          entry.getName());
-        values.put(COLUMN_DESCRIPTION,   entry.getDescription());
-        values.put(COLUMN_AMOUNT,        entry.getAmount());
-        values.put(COLUMN_BILLING_CYCLE, entry.getBillingCycleID());
-        values.put(COLUMN_BILLING_DATE,  entry.getFirstBillingDate());
-        values.put(COLUMN_REMINDER,      entry.getReminderID());
+        values.put(COLUMN_ICON_IMAGE,         entry.getIconID());
+        values.put(COLUMN_ICON_TEXT,          entry.getIconText());
+        values.put(COLUMN_COLOR,              entry.getColor());
+        values.put(COLUMN_NAME,               entry.getName());
+        values.put(COLUMN_DESCRIPTION,        entry.getDescription());
+        values.put(COLUMN_AMOUNT,             entry.getAmount());
+        values.put(COLUMN_BILLING_CYCLE,      entry.getBillingCycleID());
+        values.put(COLUMN_BILLING_DATE,       entry.getFirstBillingDate());
+        values.put(COLUMN_NEXT_BILLING_DATE,  entry.getNextBillingDate());
+        values.put(COLUMN_REMINDER,           entry.getReminderID());
 
         return values;
     }
@@ -172,17 +175,18 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
             int billingCycle = c.getInt(c.getColumnIndex(COLUMN_BILLING_CYCLE));
             long firstBillingDate = c.getLong(c.getColumnIndex(COLUMN_BILLING_DATE));
+            long nextBillingDate = c.getLong(c.getColumnIndex(COLUMN_NEXT_BILLING_DATE));
 
             int reminder = c.getInt(c.getColumnIndex(COLUMN_REMINDER));
 
             if(iconID != -1) {
                 results[i] = new Subscriptions(iconID, color, name, description, amount,
                         Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
-                        Subscriptions.reminders.values()[reminder]);
+                        nextBillingDate, Subscriptions.reminders.values()[reminder]);
             } else {
                 results[i] = new Subscriptions(iconText, color, name, description, amount,
                         Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
-                        Subscriptions.reminders.values()[reminder]);
+                        nextBillingDate, Subscriptions.reminders.values()[reminder]);
             }
 
             c.moveToNext();

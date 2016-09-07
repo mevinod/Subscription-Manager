@@ -21,6 +21,7 @@ public class Subscriptions implements Serializable {
     private double mAmount;
     private int    mBillingCycleID;
     private long   mFirstBillingDate;
+    private long   mNextBillingDate;
     private int    mReminderID;
 
     private String mAmountString;
@@ -28,7 +29,7 @@ public class Subscriptions implements Serializable {
     public enum billingCycle{
         WEEKLY(0), MONTHLY(1), QUARTERLY(2), YEARLY(3);
 
-        final int value;
+        public int value;
         billingCycle(int value){
             this.value = value;
         }
@@ -44,7 +45,9 @@ public class Subscriptions implements Serializable {
     };
 
     public Subscriptions(int IconID, int color, String name, String description, double amount,
-                         billingCycle billingCycle, long firstBillingDate, reminders reminder) {
+                         billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
+                         reminders reminder) {
+
         mIconID           = IconID;
         mIconText         = "";
         mColor            = color;
@@ -52,12 +55,14 @@ public class Subscriptions implements Serializable {
         mDescription      = description;
         mBillingCycleID   = billingCycle.value;
         mFirstBillingDate = firstBillingDate;
+        mNextBillingDate  = nextBillingDate;
         mReminderID       = reminder.value;
         setAmount(amount);
     }
 
     public Subscriptions(String IconText, int color, String name, String description, double amount,
-                         billingCycle billingCycle, long firstBillingDate, reminders reminder) {
+                         billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
+                         reminders reminder) {
         mIconID           = -1;
         mIconText         = IconText;
         mColor            = color;
@@ -65,6 +70,7 @@ public class Subscriptions implements Serializable {
         mDescription      = description;
         mBillingCycleID   = billingCycle.value;
         mFirstBillingDate = firstBillingDate;
+        mNextBillingDate  = nextBillingDate;
         mReminderID       = reminder.value;
         setAmount(amount);
     }
@@ -109,8 +115,12 @@ public class Subscriptions implements Serializable {
         amount.setTypeface(font);
 
         TextView nextPayment = (TextView)view.findViewById(R.id.nextPaymentDate);
-        nextPayment.setText(getNextPaymentString());
-        nextPayment.setTypeface(font);
+        if(!(mFirstBillingDate < 0)){
+            nextPayment.setText(getNextPaymentString());
+            nextPayment.setTypeface(font);
+        }else{
+            nextPayment.setText("");
+        }
 
         if((mReminderID == reminders.NEVER.value))
         { // If the reminder is set to never, make the alarm icon go away.
@@ -131,6 +141,7 @@ public class Subscriptions implements Serializable {
         equal &= this.mDescription.equals(subscription.getDescription());
         equal &= (this.mBillingCycleID   == subscription.getBillingCycleID());
         equal &= (this.mFirstBillingDate == subscription.getFirstBillingDate());
+        equal &= (this.mNextBillingDate  == subscription.getNextBillingDate());
         equal &= (this.mReminderID       == subscription.getReminderID());
         return equal;
     }
@@ -148,44 +159,48 @@ public class Subscriptions implements Serializable {
     }
 
     private String getNextPaymentString() {
-        String nextPayment = "";
+        // TODO I think this works properly, but I am not 100% sure. hue hue hue.
 
-        /* TODO From the first billing date, and the billing cycle, also relative to the current date
-         calculate the next payment string */
+        String nextPayment = "";
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        long todaysDate = calendar.getTimeInMillis();
 
-        Calendar target = Calendar.getInstance();
-        target.setTimeInMillis(mFirstBillingDate);
-        long targetDate = mFirstBillingDate;
+        long startDate = calendar.getTimeInMillis(); // Today's date in milliseconds
+        long endDate   = mFirstBillingDate;
 
-        billingCycle billCycle = billingCycle.values()[mBillingCycleID];
+        if(startDate > mFirstBillingDate) {
 
-        long day = 1000 * 60 * 60 * 24;
-        long week = day * 7;
-        long month = day * 30;
-        long year = month * 12;
+            if(mNextBillingDate == 0){
+                mNextBillingDate = mFirstBillingDate;
+            }
 
-        if(todaysDate <= targetDate){
-            nextPayment = getDateDistance(todaysDate, targetDate);
+            if(startDate > mNextBillingDate) {
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(mNextBillingDate);
+
+                billingCycle billCycle = billingCycle.values()[mBillingCycleID];
+
+                if (billCycle == billingCycle.WEEKLY) {
+                    c.add(Calendar.WEEK_OF_YEAR, 1);
+                } else if (billCycle == billingCycle.MONTHLY) {
+                    c.add(Calendar.MONTH, 1);
+                } else if (billCycle == billingCycle.QUARTERLY) {
+                    c.add(Calendar.MONTH, 3);
+                } else if (billCycle == billingCycle.YEARLY) {
+                    c.add(Calendar.YEAR, 1);
+                }
+
+                setNextBillingDate(c.getTimeInMillis());
+            }
+
+            endDate = mNextBillingDate;
         }
-        else if(billCycle == billingCycle.WEEKLY){ 
-//            nextPayment = getDateDistance(todaysDate, targetDate + week);
-        }
-        else if(billCycle == billCycle.MONTHLY){
-//            nextPayment = getDateDistance(todaysDate, targetDate + month);
-        }
-        else if(billCycle == billCycle.QUARTERLY){
-//            nextPayment = getDateDistance(todaysDate, targetDate + (month * 3));
-        }
-        else if(billCycle == billCycle.YEARLY){
-//            nextPayment = getDateDistance(todaysDate, targetDate + year);
-        }
+
+        nextPayment = getDateDistance(startDate, endDate);
 
         return nextPayment;
     }
@@ -195,6 +210,11 @@ public class Subscriptions implements Serializable {
 
         long deltaDate = endDate - startDate;
         int days = (int) (deltaDate / (1000*60*60*24));
+
+        if(startDate > endDate){
+            setNextBillingDate(endDate);
+            return getNextPaymentString();
+        }
 
         switch (days){
             case(0):
@@ -215,6 +235,10 @@ public class Subscriptions implements Serializable {
         }
 
         return dateString;
+    }
+
+    static public long today(){
+        return Calendar.getInstance().getTimeInMillis();
     }
 
     // GETTERS
@@ -281,6 +305,10 @@ public class Subscriptions implements Serializable {
         return mFirstBillingDate;
     }
 
+    public long getNextBillingDate(){
+        return mNextBillingDate;
+    }
+
     public String getReminderString(Context context){
         String[] reminders = context.getResources().getStringArray(R.array.reminders);
         return reminders[getReminderID()];
@@ -323,13 +351,18 @@ public class Subscriptions implements Serializable {
         }
     }
 
-
     public void setBillingCycleID(int billingCycleID) {
         this.mBillingCycleID = billingCycleID;
+        this.mNextBillingDate = 0;
     }
 
     public void setFirstBillingDate(long billingDate) {
         this.mFirstBillingDate = billingDate;
+        this.mNextBillingDate  = 0;
+    }
+
+    public void setNextBillingDate(long billingDate){
+        this.mNextBillingDate = billingDate;
     }
 
     public void setReminderID(int reminderID) {

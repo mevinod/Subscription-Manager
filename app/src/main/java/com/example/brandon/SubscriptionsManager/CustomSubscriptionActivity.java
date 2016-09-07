@@ -40,7 +40,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         deleteSubscription.setVisibility(View.GONE);
 
         newSubscription = new Subscriptions(R.drawable.ic_add, getResources().getColor(R.color.black),
-                "", "", 0f, Subscriptions.billingCycle.MONTHLY, today(), Subscriptions.reminders.NEVER);
+                "", "", 0f, Subscriptions.billingCycle.MONTHLY, -1, 0, Subscriptions.reminders.NEVER);
 
         final EditText serviceName = (EditText)findViewById(R.id.serviceName);
         serviceName.addTextChangedListener(new TextWatcher() {
@@ -145,6 +145,11 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 FirstBillingDateDialogFragment frag = new FirstBillingDateDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putLong("date_in_milliseconds", newSubscription.getFirstBillingDate());
+                frag.setArguments(args);
+
                 frag.setOnFinishedListener(new FirstBillingDateDialogFragment.OnFinishedListener() {
                     @Override
                     public void onFinishedWithResult(String monthName, int day, int year, long time) {

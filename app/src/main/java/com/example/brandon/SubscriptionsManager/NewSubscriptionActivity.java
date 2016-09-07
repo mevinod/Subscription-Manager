@@ -182,7 +182,8 @@ public class NewSubscriptionActivity extends ActionBarActivity {
                 String icon = Html.fromHtml(iconHTML).toString();
 
                 results[i] = new Subscriptions(icon, color, name, "", -1f,
-                        Subscriptions.billingCycle.MONTHLY, 0, Subscriptions.reminders.NEVER);
+                        Subscriptions.billingCycle.MONTHLY, -1,
+                        0, Subscriptions.reminders.NEVER);
 
                 c.moveToNext();
             }

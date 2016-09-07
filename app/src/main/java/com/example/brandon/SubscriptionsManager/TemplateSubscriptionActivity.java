@@ -15,7 +15,6 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 public class TemplateSubscriptionActivity extends ActionBarActivity {
@@ -41,7 +40,6 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         newSubscription = (Subscriptions)extras.getSerializable("subscription");
-        newSubscription.setFirstBillingDate(today());
 
         final EditText description = (EditText)findViewById(R.id.description);
         description.addTextChangedListener(new TextWatcher() {
@@ -105,6 +103,7 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
             }
         });
 
+
         final EditText billingCycle = (EditText)findViewById(R.id.billingCycle);
         billingCycle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +126,11 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 FirstBillingDateDialogFragment frag = new FirstBillingDateDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putLong("date_in_milliseconds", newSubscription.getFirstBillingDate());
+                frag.setArguments(args);
+
                 frag.setOnFinishedListener(new FirstBillingDateDialogFragment.OnFinishedListener() {
                     @Override
                     public void onFinishedWithResult(String monthName, int day, int year, long time) {
@@ -164,10 +168,6 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         newSubscription.fillOutView(subscription, fontAwesome);
-    }
-
-    private long today(){
-        return Calendar.getInstance().getTimeInMillis();
     }
 
     @Override

@@ -149,6 +149,11 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View view) {
                     FirstBillingDateDialogFragment frag = new FirstBillingDateDialogFragment();
+
+                    Bundle args = new Bundle();
+                    args.putLong("date_in_milliseconds", subscription.getFirstBillingDate());
+                    frag.setArguments(args);
+
                     frag.setOnFinishedListener(new FirstBillingDateDialogFragment.OnFinishedListener() {
                         @Override
                         public void onFinishedWithResult(String monthName, int day, int year, long time) {
