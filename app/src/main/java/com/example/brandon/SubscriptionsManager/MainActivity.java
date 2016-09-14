@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && data != null) {
             int index = data.getIntExtra("index", -1);
 
+
             if(resultCode == Activity.RESULT_OK) {
                 Subscriptions newSubscription = (Subscriptions)
                         data.getSerializableExtra("subscription");
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             else if(resultCode == Activity.RESULT_CANCELED){
                 entriesDB.removeRow(index);
             }
+
         }
     }
 

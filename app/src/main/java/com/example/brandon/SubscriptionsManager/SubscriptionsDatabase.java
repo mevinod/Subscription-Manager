@@ -1,15 +1,23 @@
 package com.example.brandon.SubscriptionsManager;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class SubscriptionsDatabase extends SQLiteOpenHelper {
     static ArrayList<DataChangeListener> listeners = new ArrayList<> ();
+
+    private Context context;
 
     private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "subscriptions.db";
@@ -44,6 +52,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
     public SubscriptionsDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public void setOnDataChanged (DataChangeListener listener) {
@@ -101,6 +110,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
     }
 
     public void insertSubscription(Subscriptions entry) {
+
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = getContentValuesForSubscription(entry);
@@ -108,10 +118,13 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         db.insert(SUBSCRIPTIONS_TABLE_NAME, null, values);
         db.close();
 
+        setAlarmForNotification(length() - 1, true);
         notifyDataChange();
     }
 
     public void removeRow(int index) {
+        setAlarmForNotification(index, false);
+
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
 
@@ -127,7 +140,24 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         notifyDataChange();
     }
 
+    public int getDatabaseID(int index){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
+
+        int rowId = -1;
+        if(cursor.moveToPosition(index)) {
+            rowId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+            return rowId;
+        }
+
+        cursor.close();
+        db.close();
+
+        return rowId;
+    }
+
     public void replaceSubscription(Subscriptions entry, int index) {
+
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(SUBSCRIPTIONS_TABLE_NAME, null, null, null, null, null, null);
 
@@ -142,7 +172,65 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
+        setAlarmForNotification(index, true);
         notifyDataChange();
+    }
+
+    public void setAlarmForNotification(int index, boolean displayNotification){
+        Subscriptions setAlarm = getSubscriptions()[index];
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+
+        long thisTime = setAlarm.getNextBillingDate();
+
+        int id = getDatabaseID(index);
+        intent.putExtra("id", id);
+        intent.putExtra("subscription", setAlarm);
+        intent.putExtra("index", index);
+        intent.putExtra("time", thisTime);
+
+        Subscriptions.reminders reminder =
+                Subscriptions.reminders.values()[setAlarm.getReminderID()];
+
+        if(displayNotification && reminder != Subscriptions.reminders.NEVER){
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(thisTime);
+
+            if (reminder == Subscriptions.reminders.ONE_DAY) {
+                c.add(Calendar.DATE, -1);
+            } else if(reminder == Subscriptions.reminders.TWO_DAYS){
+                c.add(Calendar.DATE, -2);
+            } else if(reminder == Subscriptions.reminders.THREE_DAYS){
+                c.add(Calendar.DATE, -3);
+            } else if(reminder == Subscriptions.reminders.ONE_WEEK){
+                c.add(Calendar.WEEK_OF_YEAR, -1);
+            } else if(reminder == Subscriptions.reminders.TWO_WEEKS){
+                c.add(Calendar.WEEK_OF_YEAR, -2);
+            } else if(reminder == Subscriptions.reminders.ONE_MONTH){
+                c.add(Calendar.MONTH, -1);
+            }
+
+            thisTime = c.getTimeInMillis();
+
+            Log.e("alarm", String.format(Locale.US, "New Alarm: %d", thisTime));
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, thisTime, alarmIntent);
+        }
+        else{
+            PendingIntent displayIntent = PendingIntent.getBroadcast(
+                    context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            if(displayIntent != null){
+                alarmManager.cancel(displayIntent);
+                displayIntent.cancel();
+            }
+        }
+
+        // Set an alarm to go off at mNextBillingDate, repeating, displays a notification;
+        // If display notification is true, change the alarm for this subscription.
+        // If display notification is false, remove the alarm for this subscription.
     }
 
     public int length() {
@@ -150,6 +238,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         Cursor c = db.rawQuery("SELECT * FROM " +  SUBSCRIPTIONS_TABLE_NAME, null);
         int length = c.getCount();
         c.close();
+
         return length;
     }
 

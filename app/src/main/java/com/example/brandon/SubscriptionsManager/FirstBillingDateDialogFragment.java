@@ -57,6 +57,11 @@ public class FirstBillingDateDialogFragment extends DialogFragment implements
             Calendar c = Calendar.getInstance();
             c.set(year, month, day);
 
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MILLISECOND, 0);
+
             long time = c.getTimeInMillis();
 
             listener.onFinishedWithResult(monthString, day, year, time);

@@ -2,7 +2,6 @@ package com.example.brandon.SubscriptionsManager;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -94,7 +93,6 @@ public class Subscriptions implements Serializable {
         if(mIconID == -1) {
             TextView icon = ((TextView)view.findViewById(R.id.icon));
             icon.setText(mIconText);
-            Log.e("text", mIconText);
             icon.setTypeface(font);
         }else{
             ((ImageView)view.findViewById(R.id.icon)).setImageResource(mIconID);
@@ -163,46 +161,44 @@ public class Subscriptions implements Serializable {
 
         String nextPayment = "";
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        long startDate = calendar.getTimeInMillis(); // Today's date in milliseconds
+        long startDate = today();
         long endDate   = mFirstBillingDate;
 
         if(startDate > mFirstBillingDate) {
-
-            if(mNextBillingDate == 0){
-                mNextBillingDate = mFirstBillingDate;
+            if(today() > mNextBillingDate) {
+                long newTime = generateNextBillingDate();
+                setNextBillingDate(newTime);
             }
-
-            if(startDate > mNextBillingDate) {
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(mNextBillingDate);
-
-                billingCycle billCycle = billingCycle.values()[mBillingCycleID];
-
-                if (billCycle == billingCycle.WEEKLY) {
-                    c.add(Calendar.WEEK_OF_YEAR, 1);
-                } else if (billCycle == billingCycle.MONTHLY) {
-                    c.add(Calendar.MONTH, 1);
-                } else if (billCycle == billingCycle.QUARTERLY) {
-                    c.add(Calendar.MONTH, 3);
-                } else if (billCycle == billingCycle.YEARLY) {
-                    c.add(Calendar.YEAR, 1);
-                }
-
-                setNextBillingDate(c.getTimeInMillis());
-            }
-
             endDate = mNextBillingDate;
         }
 
         nextPayment = getDateDistance(startDate, endDate);
 
         return nextPayment;
+    }
+
+    public long generateNextBillingDate(){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(getNextBillingDate());
+
+        billingCycle billCycle = billingCycle.values()[mBillingCycleID];
+
+        if (billCycle == billingCycle.WEEKLY) {
+            c.add(Calendar.WEEK_OF_YEAR, 1);
+        } else if (billCycle == billingCycle.MONTHLY) {
+            c.add(Calendar.MONTH, 1);
+        } else if (billCycle == billingCycle.QUARTERLY) {
+            c.add(Calendar.MONTH, 3);
+        } else if (billCycle == billingCycle.YEARLY) {
+            c.add(Calendar.YEAR, 1);
+        }
+
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        return c.getTimeInMillis();
     }
 
     private String getDateDistance(long startDate, long endDate){
@@ -225,7 +221,10 @@ public class Subscriptions implements Serializable {
                 break;
             default:
                 int months = days / 30;
-                if(months > 0){
+                if(months == 1){
+                    dateString = String.format(Locale.US, "IN %d MONTH", months);
+                }
+                else if(months > 1){
                     dateString = String.format(Locale.US, "IN %d MONTHS", months);
                 }
                 else{
@@ -238,7 +237,12 @@ public class Subscriptions implements Serializable {
     }
 
     static public long today(){
-        return Calendar.getInstance().getTimeInMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis(); // Today's date in milliseconds
     }
 
     // GETTERS
@@ -266,47 +270,51 @@ public class Subscriptions implements Serializable {
         return mDescription;
     }
 
-    public double getAmount()
-    {
+    public double getAmount() {
         return mAmount;
     }
 
-    public String getAmountString()
-    {
+    public String getAmountString() {
         return this.mAmountString;
     }
-
 
     public String getBillingCycleString(Context context){
         String[] billingCycles = context.getResources().getStringArray(R.array.billing_cycles);
         return billingCycles[getBillingCycleID()];
     }
 
-    public int getBillingCycleID()
-    {
+    public int getBillingCycleID() {
         return mBillingCycleID;
     }
 
     public String getFirstBillingDateString(Context context){
+        return convertMillisToString(context, getFirstBillingDate());
+    }
+
+    public static String convertMillisToString(Context context, long millis){
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(getFirstBillingDate());
+        c.setTimeInMillis(millis);
 
         int month = c.get(Calendar.MONTH);
         int day   = c.get(Calendar.DAY_OF_MONTH);
         int year  = c.get(Calendar.YEAR);
 
         String monthString = context.getResources().getStringArray(R.array.month_names)[month];
-
         return String.format(Locale.US, "%s %d, %d", monthString, day, year);
     }
 
-    public long getFirstBillingDate()
-    {
+    public long getFirstBillingDate() {
         return mFirstBillingDate;
     }
 
     public long getNextBillingDate(){
-        return mNextBillingDate;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mNextBillingDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis(); // Today's date in milliseconds
     }
 
     public String getReminderString(Context context){
@@ -353,12 +361,12 @@ public class Subscriptions implements Serializable {
 
     public void setBillingCycleID(int billingCycleID) {
         this.mBillingCycleID = billingCycleID;
-        this.mNextBillingDate = 0;
+        this.mNextBillingDate = mFirstBillingDate;;
     }
 
     public void setFirstBillingDate(long billingDate) {
         this.mFirstBillingDate = billingDate;
-        this.mNextBillingDate  = 0;
+        this.mNextBillingDate  = mFirstBillingDate;
     }
 
     public void setNextBillingDate(long billingDate){
