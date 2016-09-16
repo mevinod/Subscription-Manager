@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import java.util.Locale;
@@ -196,7 +197,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         subscriptionView = ((ViewStub)findViewById(R.id.viewStub)).inflate();
         subscription.fillOutView(subscriptionView, fontAwesome);
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
@@ -233,6 +234,3 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         deleteDialog.show();
     }
 }
-
-
-

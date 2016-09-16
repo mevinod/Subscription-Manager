@@ -1,6 +1,7 @@
 package com.example.brandon.SubscriptionsManager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -77,18 +78,15 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && data != null) {
             int index = data.getIntExtra("index", -1);
 
-
             if(resultCode == Activity.RESULT_OK) {
                 Subscriptions newSubscription = (Subscriptions)
                         data.getSerializableExtra("subscription");
-
                 entriesDB.replaceSubscription(newSubscription, index);
             }
 
             else if(resultCode == Activity.RESULT_CANCELED){
                 entriesDB.removeRow(index);
             }
-
         }
     }
 
@@ -130,9 +128,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Context context = this;
         frag.setOnSubscriptionClickListener(new SubscriptionsFragment.OnSubscriptionClickListener() {
             @Override
             public void onSubscriptionClick(Subscriptions subscription, int index) {
+                int id = entriesDB.getDatabaseID(index);
+
                 Intent launchActivity = new Intent(MainActivity.this, EditSubscriptionActivity.class);
                 launchActivity.putExtra("subscription", subscription);
                 launchActivity.putExtra("index", index);

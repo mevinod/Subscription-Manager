@@ -35,14 +35,12 @@ public class SubscriptionsFragment extends Fragment {
         void onBecomesEmpty();
     }
 
-    public void setOnSubscriptionClickListener (OnSubscriptionClickListener listener)
-    {
+    public void setOnSubscriptionClickListener (OnSubscriptionClickListener listener) {
         // Store the listener object
         this.subscriptionClickListeners.add(listener);
     }
 
-    public interface OnSubscriptionClickListener
-    {
+    public interface OnSubscriptionClickListener {
         void onSubscriptionClick(Subscriptions subscription, int index);
     }
 
@@ -123,6 +121,11 @@ public class SubscriptionsFragment extends Fragment {
                 public void onClick(View view) {
                     int index = subscriptionsContainer.indexOfChild(view);
                     Subscriptions subscription = entriesDB.getSubscriptions()[index];
+
+
+//                    Todo remove this
+//                    int id = entriesDB.getDatabaseID(index);
+//                    AlarmReceiver.createNotification(context, id, subscription);
 
                     for(OnSubscriptionClickListener listener: subscriptionClickListeners){
                         listener.onSubscriptionClick(subscription, index);

@@ -1,6 +1,9 @@
 package com.example.brandon.SubscriptionsManager;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
@@ -95,7 +98,13 @@ public class Subscriptions implements Serializable {
             icon.setText(mIconText);
             icon.setTypeface(font);
         }else{
-            ((ImageView)view.findViewById(R.id.icon)).setImageResource(mIconID);
+            ImageView imageView = (ImageView)view.findViewById(R.id.icon);
+            imageView.setImageResource(mIconID);
+
+            PorterDuffColorFilter porterDuffColorFilter = new PorterDuffColorFilter(Color.WHITE,
+                    PorterDuff.Mode.SRC_ATOP);
+
+            imageView.setColorFilter(porterDuffColorFilter);
         }
 
         view.setBackgroundColor(mColor);
@@ -156,7 +165,7 @@ public class Subscriptions implements Serializable {
         return equal;
     }
 
-    private String getNextPaymentString() {
+    public String getNextPaymentString() {
         // TODO I think this works properly, but I am not 100% sure. hue hue hue.
 
         String nextPayment = "";
@@ -251,8 +260,7 @@ public class Subscriptions implements Serializable {
         return mIconText;
     }
 
-    public int getIconID()
-    {
+    public int getIconID() {
         return mIconID;
     }
 

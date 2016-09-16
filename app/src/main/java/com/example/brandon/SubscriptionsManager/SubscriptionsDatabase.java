@@ -215,7 +215,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
             thisTime = c.getTimeInMillis();
 
-            Log.e("alarm", String.format(Locale.US, "New Alarm: %d", thisTime));
+            Log.e("alarm", String.format(Locale.US, "%d", thisTime));
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, thisTime, alarmIntent);
         }
         else{
@@ -240,6 +240,12 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         c.close();
 
         return length;
+    }
+
+    public void updateAlarms(){
+        for(int i = 0; i < length(); ++i) {
+            setAlarmForNotification(i, true);
+        }
     }
 
     public Subscriptions[] getSubscriptions() {

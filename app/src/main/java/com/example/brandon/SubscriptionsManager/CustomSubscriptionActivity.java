@@ -39,7 +39,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
         deleteSubscription.setVisibility(View.GONE);
 
-        newSubscription = new Subscriptions(R.drawable.ic_add, getResources().getColor(R.color.black),
+        newSubscription = new Subscriptions(R.drawable.wallet, getResources().getColor(R.color.black),
                 "", "", 0f, Subscriptions.billingCycle.MONTHLY, -1, 0, Subscriptions.reminders.NEVER);
 
         final EditText serviceName = (EditText)findViewById(R.id.serviceName);
