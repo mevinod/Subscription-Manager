@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -187,6 +188,38 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         newSubscription.fillOutView(subscription, fontAwesome);
+
+        // To change the icon of the subscription
+        ImageView icon = (ImageView)subscription.findViewById(R.id.icon);
+        icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // To change the color of the subscription
+        subscription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChangeColorDialogFragment frag = new ChangeColorDialogFragment();
+
+                Bundle args = new Bundle();
+                args.putInt("color", newSubscription.getColor());
+
+                frag.setArguments(args);
+
+                frag.setOnFinishedListener(new ChangeColorDialogFragment.OnFinishedListener() {
+                    @Override
+                    public void onFinishedWithResult(int color) {
+                        newSubscription.setColor(color);
+                        newSubscription.fillOutView(subscription, fontAwesome);
+                    }
+                });
+
+                frag.show(getSupportFragmentManager(), "change_color");
+            }
+        });
     }
 
     private long today(){

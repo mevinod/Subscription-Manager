@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import java.util.Locale;
 
@@ -35,8 +36,10 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
 
+        boolean isCustomView = (subscription.getIconID() != -1);
+
         if(!(subscription == null)){
-            if(subscription.getIconID() == -1) {
+            if(!isCustomView) {
                 setContentView(R.layout.subscription_form_template);
             }
             else{
@@ -197,6 +200,39 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         subscriptionView = ((ViewStub)findViewById(R.id.viewStub)).inflate();
         subscription.fillOutView(subscriptionView, fontAwesome);
+
+        if(isCustomView){
+            ImageView icon = (ImageView)subscriptionView.findViewById(R.id.icon);
+            icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            subscriptionView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ChangeColorDialogFragment frag = new ChangeColorDialogFragment();
+
+                    Bundle args = new Bundle();
+                    args.putInt("color", subscription.getColor());
+
+                    frag.setArguments(args);
+
+                    frag.setOnFinishedListener(new ChangeColorDialogFragment.OnFinishedListener() {
+                        @Override
+                        public void onFinishedWithResult(int color) {
+                            subscription.setColor(color);
+                            subscription.fillOutView(subscriptionView, fontAwesome);
+                        }
+                    });
+
+                    frag.show(getSupportFragmentManager(), "change_color");
+                }
+            });
+        }
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 

@@ -1,0 +1,79 @@
+package com.example.brandon.SubscriptionsManager;
+
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+public class ChangeColorDialogFragment extends DialogFragment {
+    private ArrayList<OnFinishedListener> onFinishedListeners = new ArrayList<OnFinishedListener>();
+
+    public void setOnFinishedListener(OnFinishedListener listener){
+        onFinishedListeners.add(listener);
+    }
+
+    public interface OnFinishedListener{
+        void onFinishedWithResult(int color);
+    }
+
+    private int color;
+
+    @NotNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        color = args.getInt("color");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle("Select a color");
+
+        builder.setCancelable(true);
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        // Prepare grid view
+        GridView gridView = new GridView(getContext());
+
+        final ArrayAdapter<Integer> arrayAdapter = new ArrayAdapter<Integer>(
+                getContext(), android.R.layout.select_dialog_item);
+
+        int intColors[] = getResources().getIntArray(R.array.colors);
+        Integer colors[] = new Integer[intColors.length];
+        for(int i = 0; i < intColors.length; ++i){
+            colors[i] = intColors[i];
+        }
+        arrayAdapter.addAll(colors);
+        gridView.setAdapter(arrayAdapter);
+
+        gridView.setNumColumns(4);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // do something here
+                Integer color = arrayAdapter.getItem(position);
+                for(OnFinishedListener listener: onFinishedListeners){
+                    listener.onFinishedWithResult(color);
+                }
+                dismiss();
+            }
+        });
+
+        builder.setView(gridView);
+
+        return builder.create();
+    }
+}
