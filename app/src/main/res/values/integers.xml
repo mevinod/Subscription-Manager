@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="icon_ids">
+        
+        <item>@drawable/airplane</item>
+        <item>@drawable/alien_head</item>
+        <item>@drawable/alien</item>
+        <item>@drawable/android</item>
+
+        <item>@drawable/baby</item>
+        <item>@drawable/baby_trolley</item>
+        <item>@drawable/backpack</item>
+        <item>@drawable/banking_donation_2</item>
+
+        <item>@drawable/bank_note</item>
+        <item>@drawable/beaker_science</item>
+        <item>@drawable/beauty_hand_soap</item>
+        <item>@drawable/beauty_lipstick</item>
+
+        <item>@drawable/binoculars</item>
+        <item>@drawable/box_2</item>
+        <item>@drawable/building_6</item>
+        <item>@drawable/bus_2</item>
+
+        <item>@drawable/business_briefcase_cash</item>
+        <item>@drawable/car_2</item>
+        <item>@drawable/chef_hat</item>
+        <item>@drawable/cloud_harddisk_1</item>
+
+        <item>@drawable/coffee_mug</item>
+        <item>@drawable/coin_purse_1</item>
+        <item>@drawable/color_palette</item>
+        <item>@drawable/computer_personal_1</item>
+
+        <item>@drawable/content_book_2</item>
+        <item>@drawable/couch</item>
+        <item>@drawable/devices</item>
+        <item>@drawable/espresso_machine</item>
+
+        <item>@drawable/flash</item>
+        <item>@drawable/food_plate_knife_fork</item>
+        <item>@drawable/food_steak</item>
+        <item>@drawable/graduation_hat</item>
+
+        <item>@drawable/health_ambulance</item>
+        <item>@drawable/health_heart_pulse</item>
+        <item>@drawable/helicopter</item>
+        <item>@drawable/hotel_bed_1</item>
+
+        <item>@drawable/kitchen_blender</item>
+        <item>@drawable/laptop_1</item>
+        <item>@drawable/leisure_marry_go_round</item>
+        <item>@drawable/match_stick</item>
+
+        <item>@drawable/motorcycle_1</item>
+        <item>@drawable/network_laptop</item>
+        <item>@drawable/pencil_2</item>
+        <item>@drawable/places_home_3</item>
+
+        <item>@drawable/polo_shirt</item>
+        <item>@drawable/rewards_trophy_5</item>
+        <item>@drawable/scissors</item>
+        <item>@drawable/sport_dumbbell_1</item>
+
+        <item>@drawable/spray_bottle</item>
+        <item>@drawable/star_constellation</item>
+        <item>@drawable/tram</item>
+        <item>@drawable/user_headphone</item>
+
+        <item>@drawable/video_games_pacman_ghost</item>
+        <item>@drawable/video_games_pacman</item>
+        <item>@drawable/wallet</item>
+        <item>@drawable/window_programming</item>
+
+    </array>
+
+</resources>

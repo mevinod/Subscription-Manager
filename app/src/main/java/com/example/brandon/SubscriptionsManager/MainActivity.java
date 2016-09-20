@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(newSubscription, 0);
             }
         });
-
     }
 
     @Override

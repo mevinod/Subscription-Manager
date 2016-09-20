@@ -194,7 +194,22 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ChangeIconDialogFragment frag = new ChangeIconDialogFragment();
 
+                Bundle args = new Bundle();
+                args.putInt("icon_id", newSubscription.getIconID());
+
+                frag.setArguments(args);
+
+                frag.setOnFinishedListener(new ChangeIconDialogFragment.OnFinishedListener() {
+                    @Override
+                    public void onFinishedWithResult(int iconId) {
+                        newSubscription.setIconID(iconId);
+                        newSubscription.fillOutView(subscription, fontAwesome);
+                    }
+                });
+
+                frag.show(getSupportFragmentManager(), "change_icon");
             }
         });
 
