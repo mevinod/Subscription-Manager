@@ -197,6 +197,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
                 ChangeIconDialogFragment frag = new ChangeIconDialogFragment();
 
                 Bundle args = new Bundle();
+
                 args.putInt("icon_id", newSubscription.getIconID());
 
                 frag.setArguments(args);
