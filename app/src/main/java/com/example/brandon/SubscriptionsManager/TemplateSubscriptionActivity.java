@@ -98,7 +98,11 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
                 if(!b){
                     amount.setText(newSubscription.getAmountString());
                 }else{
-                    amount.setText(String.format(Locale.US, "%.2f", newSubscription.getAmount()));
+                    if(newSubscription.getAmount() == 0 ){
+                        amount.setText("");
+                    } else {
+                        amount.setText(String.format(Locale.US, "%.2f", newSubscription.getAmount()));
+                    }
                 }
             }
         });

@@ -131,7 +131,7 @@ public class Subscriptions implements Serializable {
 
         if((mReminderID == reminders.NEVER.value))
         { // If the reminder is set to never, make the alarm icon go away.
-            view.findViewById(R.id.alarmIcon).setVisibility(View.GONE);
+            view.findViewById(R.id.alarmIcon).setVisibility(View.INVISIBLE);
         }else{
             view.findViewById(R.id.alarmIcon).setVisibility(View.VISIBLE);
         }

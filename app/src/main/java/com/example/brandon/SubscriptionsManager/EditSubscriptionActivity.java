@@ -100,6 +100,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                         try {
                             if (charSequence.charAt(0) != '$') {
                                 float value = Float.parseFloat(charSequence.toString());
+//                                BigDecimal value = new BigDecimal(charSequence.toString());
                                 subscription.setAmount(value);
                                 subscription.fillOutView(subscriptionView, fontAwesome);
                             }
@@ -124,7 +125,11 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                     if(!b){
                         amount.setText(subscription.getAmountString());
                     }else{
-                        amount.setText(String.format(Locale.US, "%.2f", subscription.getAmount()));
+                        if(subscription.getAmount() == 0 ){
+                            amount.setText("");
+                        } else {
+                            amount.setText(String.format(Locale.US, "%.2f", subscription.getAmount()));
+                        }
                     }
                 }
             });
