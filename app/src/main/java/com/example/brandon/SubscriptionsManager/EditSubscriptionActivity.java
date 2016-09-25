@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public class EditSubscriptionActivity extends ActionBarActivity {
@@ -99,8 +100,8 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                     if(charSequence.length() != 0) {
                         try {
                             if (charSequence.charAt(0) != '$') {
-                                float value = Float.parseFloat(charSequence.toString());
-//                                BigDecimal value = new BigDecimal(charSequence.toString());
+//                                float value = Float.parseFloat(charSequence.toString());
+                                BigDecimal value = new BigDecimal(charSequence.toString());
                                 subscription.setAmount(value);
                                 subscription.fillOutView(subscriptionView, fontAwesome);
                             }
@@ -108,7 +109,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                             e.printStackTrace();
                         }
                     }else{
-                        subscription.setAmount(0);
+                        subscription.setAmount(BigDecimal.valueOf(0));
                         subscription.fillOutView(subscriptionView, fontAwesome);
                     }
                 }
@@ -125,7 +126,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                     if(!b){
                         amount.setText(subscription.getAmountString());
                     }else{
-                        if(subscription.getAmount() == 0 ){
+                        if(subscription.getAmount().equals(BigDecimal.valueOf(0))){
                             amount.setText("");
                         } else {
                             amount.setText(String.format(Locale.US, "%.2f", subscription.getAmount()));

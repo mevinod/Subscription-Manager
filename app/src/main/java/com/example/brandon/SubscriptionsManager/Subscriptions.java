@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -20,7 +21,7 @@ public class Subscriptions implements Serializable {
     private int    mColor;
     private String mName;
     private String mDescription;
-    private double mAmount;
+    private BigDecimal mAmount;
     private int    mBillingCycleID;
     private long   mFirstBillingDate;
     private long   mNextBillingDate;
@@ -46,7 +47,7 @@ public class Subscriptions implements Serializable {
         }
     };
 
-    public Subscriptions(int IconID, int color, String name, String description, double amount,
+    public Subscriptions(int IconID, int color, String name, String description, BigDecimal amount,
                          billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
                          reminders reminder) {
 
@@ -62,7 +63,7 @@ public class Subscriptions implements Serializable {
         setAmount(amount);
     }
 
-    public Subscriptions(String IconText, int color, String name, String description, double amount,
+    public Subscriptions(String IconText, int color, String name, String description, BigDecimal amount,
                          billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
                          reminders reminder) {
         mIconID           = -1;
@@ -278,7 +279,7 @@ public class Subscriptions implements Serializable {
         return mDescription;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return mAmount;
     }
 
@@ -357,11 +358,11 @@ public class Subscriptions implements Serializable {
         this.mDescription = description;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.mAmount = amount;
 
         this.mAmountString = "";
-        if(!(this.mAmount < 0)){
+        if(!(this.mAmount.floatValue() < 0)){
             DecimalFormat decimalFormat = new DecimalFormat("$#,###.##");
             this.mAmountString = decimalFormat.format(amount);
         }

@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class NewSubscriptionActivity extends ActionBarActivity {
@@ -139,7 +140,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         int index = subscriptionsContainer.indexOfChild(view);
 
         Subscriptions templateSubscription = displayedSubscriptions[index];
-        templateSubscription.setAmount(0f);
+        templateSubscription.setAmount(BigDecimal.valueOf(0f));
 
         launchActivity.putExtra("subscription", templateSubscription);
         startActivityForResult(launchActivity, 0);
@@ -181,7 +182,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
                 String iconHTML = c.getString(c.getColumnIndex("icon"));
                 String icon = Html.fromHtml(iconHTML).toString();
 
-                results[i] = new Subscriptions(icon, color, name, "", -1f,
+                results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
                         Subscriptions.billingCycle.MONTHLY, -1,
                         0, Subscriptions.reminders.NEVER);
 

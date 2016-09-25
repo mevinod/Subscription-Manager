@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -19,7 +20,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
     private Context context;
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "subscriptions.db";
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
 
@@ -43,7 +44,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
             COLUMN_ICON_IMAGE         + " INTEGER, " +
             COLUMN_NAME               + " TEXT, "    +
             COLUMN_DESCRIPTION        + " TEXT, "    +
-            COLUMN_AMOUNT             + " DECIMAL, " +
+            COLUMN_AMOUNT             + " TEXT, " +
             COLUMN_BILLING_CYCLE      + " INTEGER, " +
             COLUMN_BILLING_DATE       + " INTEGER, " +
             COLUMN_NEXT_BILLING_DATE  + " INTEGER, " +
@@ -100,7 +101,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_COLOR,              entry.getColor());
         values.put(COLUMN_NAME,               entry.getName());
         values.put(COLUMN_DESCRIPTION,        entry.getDescription());
-        values.put(COLUMN_AMOUNT,             entry.getAmount());
+        values.put(COLUMN_AMOUNT,             entry.getAmount().toPlainString());
         values.put(COLUMN_BILLING_CYCLE,      entry.getBillingCycleID());
         values.put(COLUMN_BILLING_DATE,       entry.getFirstBillingDate());
         values.put(COLUMN_NEXT_BILLING_DATE,  entry.getNextBillingDate());
@@ -266,7 +267,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
             String name = c.getString(c.getColumnIndex(COLUMN_NAME));
             String description = c.getString(c.getColumnIndex(COLUMN_DESCRIPTION));
 
-            double amount = c.getDouble(c.getColumnIndex(COLUMN_AMOUNT));
+            BigDecimal amount = new BigDecimal(c.getString(c.getColumnIndex(COLUMN_AMOUNT)));
 
             int billingCycle = c.getInt(c.getColumnIndex(COLUMN_BILLING_CYCLE));
             long firstBillingDate = c.getLong(c.getColumnIndex(COLUMN_BILLING_DATE));
@@ -293,31 +294,31 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         return results;
     }
 
-    public float getTotalPayment() {
+    public BigDecimal getTotalPayment() {
         SQLiteDatabase db = getReadableDatabase();
-        float total = 0;
+        BigDecimal total = new BigDecimal(0);
 
         Cursor c = db.rawQuery("SELECT * FROM " + SUBSCRIPTIONS_TABLE_NAME, null);
         c.moveToFirst();
 
         while(!c.isAfterLast()) {
-            float monthlyPayment = c.getFloat(c.getColumnIndex(COLUMN_AMOUNT));
+            BigDecimal monthlyPayment = new BigDecimal(c.getString(c.getColumnIndex(COLUMN_AMOUNT)));
 
             int billingCycleId = c.getInt(c.getColumnIndex(COLUMN_BILLING_CYCLE));
             Subscriptions.billingCycle billingCycle =
                     Subscriptions.billingCycle.values()[billingCycleId];
 
             if(billingCycle == Subscriptions.billingCycle.WEEKLY){
-                monthlyPayment *= 4;
+                monthlyPayment = monthlyPayment.multiply(BigDecimal.valueOf(4));
             }
             else if(billingCycle == Subscriptions.billingCycle.QUARTERLY){
-                monthlyPayment /= 4;
+                monthlyPayment = monthlyPayment.divide(BigDecimal.valueOf(4f), 4);
             }
             else if(billingCycle == Subscriptions.billingCycle.YEARLY){
-                monthlyPayment /= 12;
+                monthlyPayment = monthlyPayment.divide(BigDecimal.valueOf(12f), 4);
             }
 
-            total += monthlyPayment;
+            total = total.add(monthlyPayment);
             c.moveToNext();
         }
 

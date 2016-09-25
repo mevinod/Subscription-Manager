@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -41,7 +42,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
         deleteSubscription.setVisibility(View.GONE);
 
         newSubscription = new Subscriptions(R.drawable.wallet, getResources().getColor(R.color.black),
-                "", "", 0f, Subscriptions.billingCycle.MONTHLY, -1, 0, Subscriptions.reminders.NEVER);
+                "", "", BigDecimal.valueOf(0f), Subscriptions.billingCycle.MONTHLY, -1, 0, Subscriptions.reminders.NEVER);
 
         final EditText serviceName = (EditText)findViewById(R.id.serviceName);
         serviceName.addTextChangedListener(new TextWatcher() {
@@ -94,15 +95,15 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
                 if(charSequence.length() != 0) {
                     try {
                         if (charSequence.charAt(0) != '$') {
-                            float value = Float.parseFloat(charSequence.toString());
-                            newSubscription.setAmount(value);
+                            String value = charSequence.toString();
+                            newSubscription.setAmount(new BigDecimal(value));
                             newSubscription.fillOutView(subscription, fontAwesome);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }else{
-                    newSubscription.setAmount(0);
+                    newSubscription.setAmount(BigDecimal.valueOf(0f));
                     newSubscription.fillOutView(subscription, fontAwesome);
                 }
             }
@@ -119,7 +120,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
                 if(!b){
                     amount.setText(newSubscription.getAmountString());
                 }else{
-                    if(newSubscription.getAmount() == 0 ){
+                    if(newSubscription.getAmount().equals(BigDecimal.valueOf(0f))){
                         amount.setText("");
                     } else {
                         amount.setText(String.format(Locale.US, "%.2f", newSubscription.getAmount()));
