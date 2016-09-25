@@ -122,11 +122,6 @@ public class SubscriptionsFragment extends Fragment {
                     int index = subscriptionsContainer.indexOfChild(view);
                     Subscriptions subscription = entriesDB.getSubscriptions()[index];
 
-
-//                    Todo remove this
-//                    int id = entriesDB.getDatabaseID(index);
-//                    AlarmReceiver.createNotification(context, id, subscription);
-
                     for(OnSubscriptionClickListener listener: subscriptionClickListeners){
                         listener.onSubscriptionClick(subscription, index);
                     }

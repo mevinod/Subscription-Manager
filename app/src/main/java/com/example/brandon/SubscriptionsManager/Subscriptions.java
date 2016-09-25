@@ -149,7 +149,7 @@ public class Subscriptions implements Serializable {
         equal &= this.mDescription.equals(subscription.getDescription());
         equal &= (this.mBillingCycleID   == subscription.getBillingCycleID());
         equal &= (this.mFirstBillingDate == subscription.getFirstBillingDate());
-        equal &= (this.mNextBillingDate  == subscription.getNextBillingDate());
+        equal &= (getNextBillingDate()   == subscription.getNextBillingDate());
         equal &= (this.mReminderID       == subscription.getReminderID());
         return equal;
     }

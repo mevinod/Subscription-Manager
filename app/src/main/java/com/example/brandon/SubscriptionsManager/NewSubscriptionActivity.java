@@ -21,7 +21,6 @@ import android.widget.ScrollView;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 public class NewSubscriptionActivity extends ActionBarActivity {
     Typeface fontAwesome = null;
@@ -30,6 +29,8 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
     private Subscriptions[] displayedSubscriptions;
     private LinearLayout subscriptionsContainer;
+
+    View blankView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,11 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         brandSubscriptions = brandSubscriptionsDB.getSubscriptions();
         displayedSubscriptions = brandSubscriptions.clone();
 
-        fillSubscriptionsInActivity(brandSubscriptions);
+        fillSubscriptionsInActivity(displayedSubscriptions);
+
+        blankView = View.inflate(this, R.layout.no_templates_found, null);
+        subscriptionsContainer.addView(blankView);
+        blankView.setVisibility(View.GONE);
     }
 
     @Override
@@ -65,19 +70,17 @@ public class NewSubscriptionActivity extends ActionBarActivity {
             new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    Subscriptions[] results = searchBrandSubscriptions(query);
-                    if(!Subscriptions.checkArraysEqual(results, displayedSubscriptions)) {
-                        fillSubscriptionsInActivity(results);
-                    }
+                    boolean[] results = searchBrandSubscriptions(query);
+                    updateLayout(results);
+
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String query) {
-                    Subscriptions[] results = searchBrandSubscriptions(query);
-                    if(!Subscriptions.checkArraysEqual(results, displayedSubscriptions)) {
-                        fillSubscriptionsInActivity(results);
-                    }
+                    boolean[] results = searchBrandSubscriptions(query);
+                    updateLayout(results);
+
                     return false;
                 }
             }
@@ -86,26 +89,58 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         return true;
     }
 
-    public Subscriptions[] searchBrandSubscriptions(String query) {
-        ArrayList<Subscriptions> results = new ArrayList<Subscriptions>();
+    public boolean[] searchBrandSubscriptions(String query) {
+        boolean results[] = new boolean[brandSubscriptions.length + 1];
 
-        for(Subscriptions subscription: brandSubscriptions) {
-            String name = subscription.getName().toLowerCase();
-            if(name.contains(query.toLowerCase())) {
-                results.add(subscription);
-            }
+        boolean dif = true;
+
+        for(int i = 0; i < brandSubscriptions.length; i++){
+            String name = brandSubscriptions[i].getName().toLowerCase();
+            results[i + 1] = name.contains(query.toLowerCase());
+            dif &= results[i + 1];
         }
 
-        return results.toArray(new Subscriptions[results.size()]);
+        results[0] = dif;
+
+        return results;
+    }
+
+    public void updateLayout(boolean values[]){
+        boolean emptyList;
+
+        int count = 0;
+        for(int i = 1; i < values.length; i++){
+            count += values[i] ? 0:1;
+        }
+        emptyList = (count == (values.length - 1));
+
+        if(!emptyList){
+            blankView.setVisibility(View.GONE);
+        }
+
+        for(int i = 0; i < values.length - 1; i++){
+            int visibility = values[i + 1]? View.VISIBLE : View.GONE;
+            subscriptionsContainer.getChildAt(i).setVisibility(visibility);
+        }
+
+        if(emptyList){
+            blankView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void fillSubscriptionsInActivity(Subscriptions[] subscriptions) {
         displayedSubscriptions = subscriptions.clone();
-        subscriptionsContainer.removeAllViews();
+
+        subscriptionsContainer.removeAllViewsInLayout();
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(0, 0, 0, 45);
 
         if(subscriptions.length != 0) {
-            for (Subscriptions subscription : subscriptions) {
-                View newView = subscription.getView(this, fontAwesome);
+
+            for(int i = 0; i < subscriptions.length; i++){
+                View newView = brandSubscriptions[i].getView(this, fontAwesome);
                 newView.findViewById(R.id.nextPaymentDate).setVisibility(View.GONE);
 
                 newView.setOnClickListener(new View.OnClickListener() {
@@ -114,11 +149,6 @@ public class NewSubscriptionActivity extends ActionBarActivity {
                         startTemplateSubscriptionActivity(view);
                     }
                 });
-
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                layoutParams.setMargins(0, 0, 0, 45);
-
                 subscriptionsContainer.addView(newView, layoutParams);
             }
         }
@@ -126,6 +156,15 @@ public class NewSubscriptionActivity extends ActionBarActivity {
             View blankView = View.inflate(this, R.layout.no_templates_found, null);
             subscriptionsContainer.addView(blankView);
         }
+    }
+
+    private boolean arrayContains(Subscriptions items[], Subscriptions checkItem){
+        for(Subscriptions sub: items){
+            if( sub.equals(checkItem) ){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void startCustomSubscriptionActivity(View view) {
