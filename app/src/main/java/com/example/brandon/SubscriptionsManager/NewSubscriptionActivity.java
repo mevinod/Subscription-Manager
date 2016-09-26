@@ -1,6 +1,7 @@
 package com.example.brandon.SubscriptionsManager;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -173,7 +175,10 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         templateSubscription.setAmount(BigDecimal.valueOf(0f));
 
         launchActivity.putExtra("subscription", templateSubscription);
-        startActivityForResult(launchActivity, 0);
+
+        ActivityOptions options = ActivityOptions
+                .makeSceneTransitionAnimation(this, view, "subscriptionView");
+        startActivityForResult(launchActivity, 0);//, options.toBundle());
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -178,6 +179,8 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         newSubscription.fillOutView(subscription, fontAwesome);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
