@@ -58,17 +58,17 @@ public class SubscriptionsFragment extends Fragment {
         entriesDB = new SubscriptionsDatabase(getActivity());
         entriesDB.setOnDataChanged(new SubscriptionsDatabase.DataChangeListener() {
             @Override
-            public void onDataChanged() {
-                updateSubscriptionsFragment();
+            public void onDataChanged(int index, int typeOfChange) {
+                updateSubscriptionsFragment(index, typeOfChange);
             }
         });
 
-        updateSubscriptionsFragment();
+        updateSubscriptionsFragment(-1, -1);
 
         return mainView;
     }
 
-    public void updateSubscriptionsFragment() {
+    public void updateSubscriptionsFragment(int index, int typeOfChange) {
         if(isAdded()) {
             DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             String payment = decimalFormat.format(entriesDB.getTotalPayment());
@@ -78,7 +78,18 @@ public class SubscriptionsFragment extends Fragment {
             paymentTextView.setText(newText);
 
             View[] subscriptionViews = convertSubscriptionsToViews(entriesDB.getSubscriptions());
-            fillSubscriptionsInActivity(subscriptionViews);
+
+            if (typeOfChange == -1) {
+                fillSubscriptionsInActivity(subscriptionViews);
+            }
+            else if(typeOfChange == entriesDB.REMOVED){
+                subscriptionsContainer.removeViewAt(index);
+            }else if(typeOfChange == entriesDB.INSERTED){
+                subscriptionsContainer.addView(subscriptionViews[index], 0);
+            }else if(typeOfChange == entriesDB.REPLACED){
+                subscriptionsContainer.removeViewAt(index);
+                subscriptionsContainer.addView(subscriptionViews[index], index);
+            }
         }
     }
 

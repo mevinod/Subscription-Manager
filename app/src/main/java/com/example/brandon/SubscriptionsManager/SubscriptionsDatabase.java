@@ -20,6 +20,8 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
     private Context context;
 
+    final public int REMOVED = 0, REPLACED = 1, INSERTED = 2;
+
     private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "subscriptions.db";
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
@@ -62,7 +64,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
     }
 
     public interface DataChangeListener {
-        void onDataChanged();
+        void onDataChanged(int index, int type);
     }
 
     @Override
@@ -120,7 +122,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         db.close();
 
         setAlarmForNotification(length() - 1, true);
-        notifyDataChange();
+        notifyDataChange(new int[]{length() - 1}, INSERTED);
     }
 
     public void removeRow(int index) {
@@ -138,7 +140,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
-        notifyDataChange();
+        notifyDataChange(new int[]{index}, REMOVED);
     }
 
     public int getDatabaseID(int index){
@@ -174,7 +176,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         db.close();
 
         setAlarmForNotification(index, true);
-        notifyDataChange();
+        notifyDataChange(new int[]{index}, REPLACED);
     }
 
     public void setAlarmForNotification(int index, boolean displayNotification){
@@ -327,9 +329,11 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         return total;
     }
 
-    public void notifyDataChange(){
+    public void notifyDataChange(int indexes[], int type){
         for (DataChangeListener listener : listeners) {
-            listener.onDataChanged();
+            for(int index: indexes){
+                listener.onDataChanged(index, type);
+            }
         }
     }
 }

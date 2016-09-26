@@ -120,7 +120,7 @@ public class CustomSubscriptionActivity extends ActionBarActivity {
                 if(!b){
                     amount.setText(newSubscription.getAmountString());
                 }else{
-                    if(newSubscription.getAmount().equals(BigDecimal.valueOf(0f))){
+                    if(newSubscription.getAmount().floatValue() == 0f){
                         amount.setText("");
                     } else {
                         amount.setText(String.format(Locale.US, "%.2f", newSubscription.getAmount()));
