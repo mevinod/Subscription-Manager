@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/viewStub"
         android:layout_gravity="center_horizontal"
-        android:layout="@layout/subscription_layout_text_icon"
+        android:layout="@layout/subscription_layout_image_icon"
         android:inflatedId="@+id/subscriptionView" />
 
     <ScrollView

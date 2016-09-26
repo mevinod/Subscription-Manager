@@ -15,7 +15,6 @@ import android.view.ViewStub;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -42,7 +41,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         if(!(subscription == null)){
             if(!isCustomView) {
-                setContentView(R.layout.subscription_form_template);
+                setContentView(R.layout.subscription_form_template_text);
             }
             else{
                 setContentView(R.layout.subscription_form_custom);

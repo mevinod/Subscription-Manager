@@ -158,15 +158,6 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         }
     }
 
-    private boolean arrayContains(Subscriptions items[], Subscriptions checkItem){
-        for(Subscriptions sub: items){
-            if( sub.equals(checkItem) ){
-                return false;
-            }
-        }
-        return true;
-    }
-
     public void startCustomSubscriptionActivity(View view) {
         Intent launchActivity = new Intent(this, CustomSubscriptionActivity.class);
         startActivityForResult(launchActivity, 0);
@@ -196,8 +187,8 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
     public class BrandSubscriptions extends SQLiteAssetHelper {
 
-        private static final String DATABASE_NAME = "BrandSubscriptions.sql";
-        private static final int DATABASE_VERSION = 1;
+        private static final String DATABASE_NAME = "BrandSubscriptions2.sql";
+        private static final int DATABASE_VERSION = 2;
 
         public BrandSubscriptions(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -218,12 +209,24 @@ public class NewSubscriptionActivity extends ActionBarActivity {
                 String colorString = c.getString(c.getColumnIndex("color"));
                 int color = Color.parseColor(colorString);
 
-                String iconHTML = c.getString(c.getColumnIndex("icon"));
-                String icon = Html.fromHtml(iconHTML).toString();
+                String subType = c.getString(c.getColumnIndex("type"));
 
-                results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
-                        Subscriptions.billingCycle.MONTHLY, -1,
-                        0, Subscriptions.reminders.NEVER);
+                if(subType.equals("font")){
+                    String iconHTML = c.getString(c.getColumnIndex("icon"));
+                    String icon = Html.fromHtml(iconHTML).toString();
+
+                    results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
+                            Subscriptions.billingCycle.MONTHLY, -1,
+                            0, Subscriptions.reminders.NEVER);
+                }
+                else if(subType.equals("image_id")){
+                    String iconText = c.getString(c.getColumnIndex("icon"));
+                    int icon = getResources().getIdentifier(iconText, "drawable", getPackageName());
+
+                    results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
+                            Subscriptions.billingCycle.MONTHLY, -1,
+                            0, Subscriptions.reminders.NEVER);
+                }
 
                 c.moveToNext();
             }

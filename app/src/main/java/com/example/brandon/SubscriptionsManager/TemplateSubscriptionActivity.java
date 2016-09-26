@@ -28,7 +28,15 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.subscription_form_template);
+
+        Bundle extras = getIntent().getExtras();
+        newSubscription = (Subscriptions)extras.getSerializable("subscription");
+
+        if(newSubscription.getIconID() == -1){
+            setContentView(R.layout.subscription_form_template_text);
+        }else{
+            setContentView(R.layout.subscription_form_template_image);
+        }
 
         final Toolbar toolbar = (Toolbar)findViewById(R.id.edit_subscription_toolbar);
         setSupportActionBar(toolbar);
@@ -38,9 +46,6 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
         deleteSubscription.setVisibility(View.GONE);
-
-        Bundle extras = getIntent().getExtras();
-        newSubscription = (Subscriptions)extras.getSerializable("subscription");
 
         final EditText description = (EditText)findViewById(R.id.description);
         description.addTextChangedListener(new TextWatcher() {
