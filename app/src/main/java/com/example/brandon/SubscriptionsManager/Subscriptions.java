@@ -26,6 +26,7 @@ public class Subscriptions implements Serializable {
     private long   mFirstBillingDate;
     private long   mNextBillingDate;
     private int    mReminderID;
+    private int    mSubscriptionType;
 
     private String mAmountString;
 
@@ -49,7 +50,7 @@ public class Subscriptions implements Serializable {
 
     public Subscriptions(int IconID, int color, String name, String description, BigDecimal amount,
                          billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
-                         reminders reminder) {
+                         reminders reminder, int subscriptionType) {
 
         mIconID           = IconID;
         mIconText         = "";
@@ -61,11 +62,12 @@ public class Subscriptions implements Serializable {
         mNextBillingDate  = nextBillingDate;
         mReminderID       = reminder.value;
         setAmount(amount);
+        mSubscriptionType = subscriptionType;
     }
 
     public Subscriptions(String IconText, int color, String name, String description, BigDecimal amount,
                          billingCycle billingCycle, long firstBillingDate, long nextBillingDate,
-                         reminders reminder) {
+                         reminders reminder, int subscriptionType) {
         mIconID           = -1;
         mIconText         = IconText;
         mColor            = color;
@@ -76,6 +78,7 @@ public class Subscriptions implements Serializable {
         mNextBillingDate  = nextBillingDate;
         mReminderID       = reminder.value;
         setAmount(amount);
+        mSubscriptionType = subscriptionType;
     }
 
     public View getView(Context context, Typeface font){
@@ -151,6 +154,7 @@ public class Subscriptions implements Serializable {
         equal &= (this.mFirstBillingDate == subscription.getFirstBillingDate());
         equal &= (getNextBillingDate()   == subscription.getNextBillingDate());
         equal &= (this.mReminderID       == subscription.getReminderID());
+        equal &= (this.mSubscriptionType == subscription.getSubscriptionType());
         return equal;
     }
 
@@ -320,6 +324,10 @@ public class Subscriptions implements Serializable {
     public int getReminderID()
     {
         return mReminderID;
+    }
+
+    public int getSubscriptionType(){
+        return mSubscriptionType;
     }
 
     // SETTERS

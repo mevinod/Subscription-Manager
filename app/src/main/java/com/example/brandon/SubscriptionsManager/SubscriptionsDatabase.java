@@ -22,7 +22,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
     final public int REMOVED = 0, REPLACED = 1, INSERTED = 2;
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "subscriptions.db";
     private static final String SUBSCRIPTIONS_TABLE_NAME = "subscriptions";
 
@@ -37,6 +37,9 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_BILLING_DATE      = "billing_date";
     private static final String COLUMN_NEXT_BILLING_DATE = "next_billing_date";
     private static final String COLUMN_REMINDER          = "reminder";
+    private static final String COLUMN_TYPE              = "type";
+
+    public static final int CUSTOM_TYPE = 0, TEMPLATE_TYPE = 1;
 
     private static final String SUBSCRIPTIONS_TABLE_CREATE = "CREATE TABLE " +
             SUBSCRIPTIONS_TABLE_NAME + " (" +
@@ -50,7 +53,8 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
             COLUMN_BILLING_CYCLE      + " INTEGER, " +
             COLUMN_BILLING_DATE       + " INTEGER, " +
             COLUMN_NEXT_BILLING_DATE  + " INTEGER, " +
-            COLUMN_REMINDER           + " INTEGER "  +
+            COLUMN_REMINDER           + " INTEGER, " +
+            COLUMN_TYPE               + " INTEGER " +
             ");";
 
     public SubscriptionsDatabase(Context context) {
@@ -108,6 +112,7 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
         values.put(COLUMN_BILLING_DATE,       entry.getFirstBillingDate());
         values.put(COLUMN_NEXT_BILLING_DATE,  entry.getNextBillingDate());
         values.put(COLUMN_REMINDER,           entry.getReminderID());
+        values.put(COLUMN_TYPE,               entry.getSubscriptionType());
 
         return values;
     }
@@ -277,14 +282,16 @@ public class SubscriptionsDatabase extends SQLiteOpenHelper {
 
             int reminder = c.getInt(c.getColumnIndex(COLUMN_REMINDER));
 
+            int subscriptionType = c.getInt(c.getColumnIndex(COLUMN_TYPE));
+
             if(iconID != -1) {
                 results[i] = new Subscriptions(iconID, color, name, description, amount,
                         Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
-                        nextBillingDate, Subscriptions.reminders.values()[reminder]);
+                        nextBillingDate, Subscriptions.reminders.values()[reminder], subscriptionType);
             } else {
                 results[i] = new Subscriptions(iconText, color, name, description, amount,
                         Subscriptions.billingCycle.values()[billingCycle], firstBillingDate,
-                        nextBillingDate, Subscriptions.reminders.values()[reminder]);
+                        nextBillingDate, Subscriptions.reminders.values()[reminder], subscriptionType);
             }
 
             c.moveToNext();

@@ -43,11 +43,13 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
 
-        boolean isCustomView = (subscription.getIconID() != -1);
-
         if(!(subscription == null)){
-            if(!isCustomView) {
-                setContentView(R.layout.subscription_form_template_text);
+            if(!(subscription.getSubscriptionType() == SubscriptionsDatabase.CUSTOM_TYPE)) {
+                if(subscription.getIconID() == -1){
+                    setContentView(R.layout.subscription_form_template_text);
+                }else{
+                    setContentView(R.layout.subscription_form_template_image);
+                }
             }
             else{
                 setContentView(R.layout.subscription_form_custom);
@@ -219,7 +221,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         subscriptionView = ((ViewStub)findViewById(R.id.viewStub)).inflate();
         subscription.fillOutView(subscriptionView, fontAwesome);
 
-        if(isCustomView){
+        if(subscription.getSubscriptionType() == SubscriptionsDatabase.CUSTOM_TYPE){
             ImageView icon = (ImageView)subscriptionView.findViewById(R.id.icon);
             icon.setOnClickListener(new View.OnClickListener() {
                 @Override

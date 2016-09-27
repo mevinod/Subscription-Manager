@@ -1,0 +1,53 @@
+PRAGMA foreign_keys=OFF;
+
+BEGIN TRANSACTION;
+CREATE TABLE subscriptions (name TEXT, color TEXT, icon TEXT, type TEXT);
+INSERT INTO "subscriptions" VALUES('Amex','#FF002663','&#xF1F3;','font');
+INSERT INTO "subscriptions" VALUES('Apple Music','#000000','&#xF179;','font');
+INSERT INTO "subscriptions" VALUES('Behance','#075AFF','&#xf1b4;','font');
+
+INSERT INTO "subscriptions" VALUES('Bitbucket','#10445c','&#xf171;','font');
+INSERT INTO "subscriptions" VALUES('BuySellAds','#C90302','&#xF20D;','font');
+INSERT INTO "subscriptions" VALUES('CodePen','#000000','&#xF1CB;','font');
+INSERT INTO "subscriptions" VALUES('DeviantArt','#07CC48','&#xF1BD;','font');
+INSERT INTO "subscriptions" VALUES('Diners Club','#026AAA','&#xF24C;','font');
+INSERT INTO "subscriptions" VALUES('Discord','#7289DA','discord','image_id');
+INSERT INTO "subscriptions" VALUES('Discover','#F07F1B','&#xF1F2;','font');
+INSERT INTO "subscriptions" VALUES('Dribble','#EA4D8A','&#xF17D;','font');
+INSERT INTO "subscriptions" VALUES('Dropbox','#075aff','&#xf16b;','font');
+INSERT INTO "subscriptions" VALUES('ExpeditedSSL','#C9C3E6','&#xF23E;','font');
+INSERT INTO "subscriptions" VALUES('Github','#a9a1a1','&#xf09b;','font');
+
+INSERT INTO "subscriptions" VALUES('GitLab','#FCA428','&#xF1D3;','font');
+INSERT INTO "subscriptions" VALUES('Gratipay','#673402','&#xF184;','font');
+INSERT INTO "subscriptions" VALUES('IoxHost','#FFFAA829','&#xF208;','font');
+INSERT INTO "subscriptions" VALUES('JCB','#0F4C96','&#xF24B;','font');
+INSERT INTO "subscriptions" VALUES('Last.fm','#FFD51007','&#xF202;','font');
+INSERT INTO "subscriptions" VALUES('LeanPub','#000000','&#xF212;','font');
+INSERT INTO "subscriptions" VALUES('LinkedIn','#0278B5','&#xF0E1;','font');
+INSERT INTO "subscriptions" VALUES('MasterCard','#FF9A02','&#xF1F1;','font');
+INSERT INTO "subscriptions" VALUES('Mixcloud','#FF34495E','&#xF289;','font');
+INSERT INTO "subscriptions" VALUES('OneDrive','#094AB2','onedrive','image_id');
+INSERT INTO "subscriptions" VALUES('OptinMonster','#0F83DF','&#xF23C;','font');
+INSERT INTO "subscriptions" VALUES('Pagelines','#000000','&#xF18C;','font');
+INSERT INTO "subscriptions" VALUES('Patreon','#E6461A','patreon','image_id');
+INSERT INTO "subscriptions" VALUES('Paypal','#10445C','&#xf1f4;','font');
+INSERT INTO "subscriptions" VALUES('Pocket','#EF4157','&#xF265;','font');
+INSERT INTO "subscriptions" VALUES('Scribd','#1C7CBA','&#xF28A;','font');
+INSERT INTO "subscriptions" VALUES('Sellsy','#0275C8','&#xF213;','font');
+INSERT INTO "subscriptions" VALUES('Shirts In Bulk','#FFE43520','&#xF214;','font');
+INSERT INTO "subscriptions" VALUES('SimplyBuilt','#000000','&#xF215;','font');
+INSERT INTO "subscriptions" VALUES('SkyAtlas','#00AEBC','&#xF216;','font');
+INSERT INTO "subscriptions" VALUES('Skype','#07b7e7','&#xf17e;','font');
+INSERT INTO "subscriptions" VALUES('Slack','#56B68B','&#xf198;','font');
+INSERT INTO "subscriptions" VALUES('SoundCloud','#ff7411','&#xf1be;','font');
+INSERT INTO "subscriptions" VALUES('Spotify','#2ebd59','&#xf1bc;','font');
+INSERT INTO "subscriptions" VALUES('Steam','#171A21','&#xF1B6;','font');
+INSERT INTO "subscriptions" VALUES('Stripe','#FF00AFE1','&#xF1F5;','font');
+INSERT INTO "subscriptions" VALUES('Treehouse','#5FCF80','treehouse','image_id');
+INSERT INTO "subscriptions" VALUES('Trello','#027ABF','&#xF181;','font');
+INSERT INTO "subscriptions" VALUES('Twitch','#6441a4','&#xf1e8;','font');
+
+INSERT INTO "subscriptions" VALUES('Visa','#FFFDBB0A','&#xF1F0;','font');
+INSERT INTO "subscriptions" VALUES('YouTube','#e62117','&#xf167;','font');
+COMMIT;

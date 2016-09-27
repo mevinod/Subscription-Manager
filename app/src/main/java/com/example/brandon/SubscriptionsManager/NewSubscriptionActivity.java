@@ -192,7 +192,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
     public class BrandSubscriptions extends SQLiteAssetHelper {
 
-        private static final String DATABASE_NAME = "BrandSubscriptions2.sql";
+        private static final String DATABASE_NAME = "BrandSubscriptions3.sql";
         private static final int DATABASE_VERSION = 2;
 
         BrandSubscriptions(Context context) {
@@ -222,7 +222,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
                     results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
                             Subscriptions.billingCycle.MONTHLY, -1,
-                            0, Subscriptions.reminders.NEVER);
+                            0, Subscriptions.reminders.NEVER, SubscriptionsDatabase.TEMPLATE_TYPE);
                 }
                 else if(subType.equals("image_id")){
                     String iconText = c.getString(c.getColumnIndex("icon"));
@@ -230,7 +230,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
                     results[i] = new Subscriptions(icon, color, name, "", BigDecimal.valueOf(-1f),
                             Subscriptions.billingCycle.MONTHLY, -1,
-                            0, Subscriptions.reminders.NEVER);
+                            0, Subscriptions.reminders.NEVER, SubscriptionsDatabase.TEMPLATE_TYPE);
                 }
 
                 c.moveToNext();
