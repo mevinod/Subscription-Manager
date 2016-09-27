@@ -41,7 +41,7 @@ public class SubscriptionsFragment extends Fragment {
     }
 
     public interface OnSubscriptionClickListener {
-        void onSubscriptionClick(Subscriptions subscription, int index);
+        void onSubscriptionClick(Subscriptions subscription, int index, View view);
     }
 
     @Nullable
@@ -134,7 +134,7 @@ public class SubscriptionsFragment extends Fragment {
                     Subscriptions subscription = entriesDB.getSubscriptions()[index];
 
                     for(OnSubscriptionClickListener listener: subscriptionClickListeners){
-                        listener.onSubscriptionClick(subscription, index);
+                        listener.onSubscriptionClick(subscription, index, view);
                     }
                 }
             });

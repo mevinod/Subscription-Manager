@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BillManager.iml" filepath="$PROJECT_DIR$/BillManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SubscriptionManager.iml" filepath="$PROJECT_DIR$/SubscriptionManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

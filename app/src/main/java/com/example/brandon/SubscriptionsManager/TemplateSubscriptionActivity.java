@@ -44,6 +44,12 @@ public class TemplateSubscriptionActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                supportFinishAfterTransition();
+            }
+        });
 
         Button deleteSubscription = (Button)findViewById(R.id.deleteSubscription);
         deleteSubscription.setVisibility(View.GONE);

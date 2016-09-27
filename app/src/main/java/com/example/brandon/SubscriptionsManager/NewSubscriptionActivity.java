@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -176,9 +175,11 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
         launchActivity.putExtra("subscription", templateSubscription);
 
+        //todo shared element transition
         ActivityOptions options = ActivityOptions
                 .makeSceneTransitionAnimation(this, view, "subscriptionView");
-        startActivityForResult(launchActivity, 0);//, options.toBundle());
+
+        startActivityForResult(launchActivity, 0, options.toBundle());
     }
 
     @Override
@@ -186,7 +187,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null) {
             setResult(Activity.RESULT_OK, data);
-            finish();
+            supportFinishAfterTransition();
         }
     }
 
@@ -195,7 +196,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         private static final String DATABASE_NAME = "BrandSubscriptions2.sql";
         private static final int DATABASE_VERSION = 2;
 
-        public BrandSubscriptions(Context context) {
+        BrandSubscriptions(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 

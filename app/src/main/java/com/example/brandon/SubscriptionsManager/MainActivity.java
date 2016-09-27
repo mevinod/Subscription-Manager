@@ -1,6 +1,7 @@
 package com.example.brandon.SubscriptionsManager;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
         if(entriesDB == null) {
             entriesDB = new SubscriptionsDatabase(this);
         }
+
+        entriesDB.setOnDataChanged(new SubscriptionsDatabase.DataChangeListener() {
+            @Override
+            public void onDataChanged(int index, int type) {
+                if(type == entriesDB.REMOVED){
+                    if(entriesDB.length() == 0){
+                        setFragmentBlankDatabase();
+                    }
+                }
+            }
+        });
 
         if(entriesDB.length() == 0) {
             setFragmentBlankDatabase();
@@ -130,13 +142,17 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
         frag.setOnSubscriptionClickListener(new SubscriptionsFragment.OnSubscriptionClickListener() {
             @Override
-            public void onSubscriptionClick(Subscriptions subscription, int index) {
+            public void onSubscriptionClick(Subscriptions subscription, int index, View view) {
                 int id = entriesDB.getDatabaseID(index);
+
+                //todo shared element transition
+                ActivityOptions options = ActivityOptions
+                        .makeSceneTransitionAnimation(MainActivity.this, view, "subscriptionView");
 
                 Intent launchActivity = new Intent(MainActivity.this, EditSubscriptionActivity.class);
                 launchActivity.putExtra("subscription", subscription);
                 launchActivity.putExtra("index", index);
-                startActivityForResult(launchActivity, 1);
+                startActivityForResult(launchActivity, 1, options.toBundle());
             }
         });
 

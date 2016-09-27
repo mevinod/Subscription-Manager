@@ -202,6 +202,12 @@ public class EditSubscriptionActivity extends ActionBarActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                supportFinishAfterTransition();
+            }
+        });
 
         subscriptionView = ((ViewStub)findViewById(R.id.viewStub)).inflate();
         subscription.fillOutView(subscriptionView, fontAwesome);
@@ -270,7 +276,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         resultIntent.putExtra("index", index);
 
         setResult(Activity.RESULT_OK, resultIntent);
-        finish();
+        supportFinishAfterTransition();
     }
 
     public void deleteSubscription(View view) {

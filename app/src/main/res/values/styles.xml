@@ -19,6 +19,7 @@
 
     <style name="SubscriptionStyle">
         <item name="android:elevation">5dp</item>
+        <item name="android:transitionName">subscriptionView</item>
     </style>
 
     <style name="line">
