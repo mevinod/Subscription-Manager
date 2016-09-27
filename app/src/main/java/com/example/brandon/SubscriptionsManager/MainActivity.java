@@ -143,9 +143,6 @@ public class MainActivity extends AppCompatActivity {
         frag.setOnSubscriptionClickListener(new SubscriptionsFragment.OnSubscriptionClickListener() {
             @Override
             public void onSubscriptionClick(Subscriptions subscription, int index, View view) {
-                int id = entriesDB.getDatabaseID(index);
-
-                //todo shared element transition
                 ActivityOptions options = ActivityOptions
                         .makeSceneTransitionAnimation(MainActivity.this, view, "subscriptionView");
 

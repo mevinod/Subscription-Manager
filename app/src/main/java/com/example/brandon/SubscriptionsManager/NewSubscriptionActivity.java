@@ -175,7 +175,6 @@ public class NewSubscriptionActivity extends ActionBarActivity {
 
         launchActivity.putExtra("subscription", templateSubscription);
 
-        //todo shared element transition
         ActivityOptions options = ActivityOptions
                 .makeSceneTransitionAnimation(this, view, "subscriptionView");
 
@@ -187,7 +186,7 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null) {
             setResult(Activity.RESULT_OK, data);
-            supportFinishAfterTransition();
+            finish();
         }
     }
 

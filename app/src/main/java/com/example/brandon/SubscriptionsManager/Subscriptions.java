@@ -154,21 +154,7 @@ public class Subscriptions implements Serializable {
         return equal;
     }
 
-    public static boolean checkArraysEqual(Subscriptions[] arryOne, Subscriptions[] arryTwo){
-        boolean equal = (arryOne.length == arryTwo.length);
-        if(equal){
-            for(int sub = 0; sub < arryOne.length; ++sub){
-                if(!arryOne[sub].equals(arryTwo[sub])) {
-                    return false;
-                }
-            }
-        }
-        return equal;
-    }
-
     public String getNextPaymentString() {
-        // TODO I think this works properly, but I am not 100% sure. hue hue hue.
-
         String nextPayment = "";
 
         long startDate = today();

@@ -28,6 +28,12 @@ public class EditSubscriptionActivity extends ActionBarActivity {
     private Typeface fontAwesome;
 
     @Override
+    public void onBackPressed() {
+        findViewById(R.id.theLayout).setVisibility(View.GONE);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -205,6 +211,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                findViewById(R.id.theLayout).setVisibility(View.GONE);
                 supportFinishAfterTransition();
             }
         });
@@ -276,6 +283,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
         resultIntent.putExtra("index", index);
 
         setResult(Activity.RESULT_OK, resultIntent);
+        findViewById(R.id.theLayout).setVisibility(View.GONE);
         supportFinishAfterTransition();
     }
 
