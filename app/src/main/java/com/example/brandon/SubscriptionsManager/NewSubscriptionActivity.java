@@ -71,16 +71,14 @@ public class NewSubscriptionActivity extends ActionBarActivity {
             new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    boolean[] results = searchBrandSubscriptions(query);
-                    updateLayout(results);
+                    searchBrandSubscriptions(query);
 
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String query) {
-                    boolean[] results = searchBrandSubscriptions(query);
-                    updateLayout(results);
+                    searchBrandSubscriptions(query);
 
                     return false;
                 }
@@ -90,43 +88,23 @@ public class NewSubscriptionActivity extends ActionBarActivity {
         return true;
     }
 
-    public boolean[] searchBrandSubscriptions(String query) {
-        boolean results[] = new boolean[brandSubscriptions.length + 1];
-
-        boolean dif = true;
+    public void searchBrandSubscriptions(String query) {
+        // This variable is used to track if the query finds any results
+        boolean anyResults = true;
 
         for(int i = 0; i < brandSubscriptions.length; i++){
             String name = brandSubscriptions[i].getName().toLowerCase();
-            results[i + 1] = name.contains(query.toLowerCase());
-            dif &= results[i + 1];
-        }
 
-        results[0] = dif;
+            // Stores "Does this element at this index match the query?"
+            boolean found = name.contains(query.toLowerCase());
 
-        return results;
-    }
-
-    public void updateLayout(boolean values[]){
-        boolean emptyList;
-
-        int count = 0;
-        for(int i = 1; i < values.length; i++){
-            count += values[i] ? 0:1;
-        }
-        emptyList = (count == (values.length - 1));
-
-        if(!emptyList){
-            blankView.setVisibility(View.GONE);
-        }
-
-        for(int i = 0; i < values.length - 1; i++){
-            int visibility = values[i + 1]? View.VISIBLE : View.GONE;
+            int visibility = found ? View.VISIBLE : View.GONE;
             subscriptionsContainer.getChildAt(i).setVisibility(visibility);
+
+            anyResults &= !found;
         }
 
-        if(emptyList){
-            blankView.setVisibility(View.VISIBLE);
-        }
+        blankView.setVisibility(anyResults? View.VISIBLE : View.GONE);
     }
 
     public void fillSubscriptionsInActivity(Subscriptions[] subscriptions) {

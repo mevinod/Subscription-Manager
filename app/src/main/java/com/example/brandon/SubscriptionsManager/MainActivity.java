@@ -2,7 +2,6 @@ package com.example.brandon.SubscriptionsManager;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -23,29 +22,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set the toolbar as the actionbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.main_activity_title);
         setSupportActionBar(toolbar);
 
-        if(entriesDB == null) {
-            entriesDB = new SubscriptionsDatabase(this);
-        }
-
-        entriesDB.setOnDataChanged(new SubscriptionsDatabase.DataChangeListener() {
-            @Override
-            public void onDataChanged(int index, int type) {
-                if(type == entriesDB.REMOVED){
-                    if(entriesDB.length() == 0){
-                        setFragmentBlankDatabase();
-                    }
-                }
-            }
-        });
+        entriesDB = new SubscriptionsDatabase(this);
 
         if(entriesDB.length() == 0) {
             setFragmentBlankDatabase();
-        }
-        else {
+
+        } else {
             setFragmentSubscriptions();
         }
 
@@ -65,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(entriesDB.length() == 0) {
             setFragmentBlankDatabase();
-        }
-        else {
+        } else {
             setFragmentSubscriptions();
         }
     }
@@ -74,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // This is for when the new subscription activity returns with a new subscription
         if (resultCode == Activity.RESULT_OK && requestCode == 0 && data != null) {
             Subscriptions newSubscription = (Subscriptions)
                     data.getSerializableExtra("newSubscription");
@@ -86,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             setFragmentSubscriptions();
         }
 
+        // This is for when the edit subscription activity returns with a updated subscription
         if (requestCode == 1 && data != null) {
             int index = data.getIntExtra("index", -1);
 
@@ -139,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Context context = this;
         frag.setOnSubscriptionClickListener(new SubscriptionsFragment.OnSubscriptionClickListener() {
             @Override
             public void onSubscriptionClick(Subscriptions subscription, int index, View view) {

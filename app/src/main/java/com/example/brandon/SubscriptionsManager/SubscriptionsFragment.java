@@ -84,6 +84,11 @@ public class SubscriptionsFragment extends Fragment {
             }
             else if(typeOfChange == entriesDB.REMOVED){
                 subscriptionsContainer.removeViewAt(index);
+                if(subscriptionsContainer.getChildCount() == 0){
+                    for(BecomesEmptyListener listener: listeners) {
+                        listener.onBecomesEmpty();
+                    }
+                }
             }else if(typeOfChange == entriesDB.INSERTED){
                 subscriptionsContainer.addView(subscriptionViews[index], 0);
             }else if(typeOfChange == entriesDB.REPLACED){
