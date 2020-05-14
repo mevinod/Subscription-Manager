@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SubscriptionManager.iml" filepath="$PROJECT_DIR$/SubscriptionManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Subscription-Manager.iml" filepath="$PROJECT_DIR$/Subscription-Manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/Subscription-Manager-app.iml" filepath="$PROJECT_DIR$/app/Subscription-Manager-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

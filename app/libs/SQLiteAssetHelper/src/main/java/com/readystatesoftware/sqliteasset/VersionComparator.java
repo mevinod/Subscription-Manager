@@ -14,7 +14,7 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper.SQLiteAssetException
  * scripts from being applied out of order when they first move to double-,
  * triple-, etc. digits.
  * <p>
- * For example, this fixes an upgrade that would apply 2 different upgrade
+ * For mevinod, this fixes an upgrade that would apply 2 different upgrade
  * files from version 9 to 11 (<code>..._updated_9_10</code> and
  * <code>..._updated_10_11</code>) from using the <em>incorrect</em>
  * alphanumeric order of <code>10_11</code> before <code>9_10</code>.

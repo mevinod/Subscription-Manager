@@ -1,4 +1,4 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.mevinod.brandon.SubscriptionsManager.R;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.math.BigDecimal;

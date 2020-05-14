@@ -1,8 +1,10 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+
+import com.mevinod.brandon.SubscriptionsManager.R;
 
 import java.util.ArrayList;
 

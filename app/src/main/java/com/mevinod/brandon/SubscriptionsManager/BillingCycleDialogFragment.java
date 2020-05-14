@@ -1,4 +1,4 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.ArrayAdapter;
-import org.jetbrains.annotations.NotNull;
+
+import com.mevinod.brandon.SubscriptionsManager.R;
 
 import java.util.ArrayList;
 
-public class RemindersDialogFragment extends DialogFragment {
+public class BillingCycleDialogFragment extends DialogFragment {
     private ArrayList<OnFinishedListener> onFinishedListeners = new ArrayList<OnFinishedListener>();
 
     public void setOnFinishedListener(OnFinishedListener listener){
@@ -21,12 +22,11 @@ public class RemindersDialogFragment extends DialogFragment {
         void onFinishedWithResult(int index, String name);
     }
 
-    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-        builder.setTitle("Remind me");
+        builder.setTitle("Billing cycle");
 
         builder.setCancelable(true);
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -39,7 +39,7 @@ public class RemindersDialogFragment extends DialogFragment {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 getContext(), android.R.layout.select_dialog_item);
 
-        arrayAdapter.addAll(getResources().getStringArray(R.array.reminders));
+        arrayAdapter.addAll(getResources().getStringArray(R.array.billing_cycles));
 
         builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                     @Override

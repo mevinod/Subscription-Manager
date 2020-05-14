@@ -1,4 +1,4 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.brandon.SubscriptionsManager">
+    package="com.mevinod.brandon.SubscriptionsManager">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -17,10 +17,10 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="false">
 
-        <receiver android:name=".AlarmReceiver"/>
+        <receiver android:name="com.mevinod.brandon.SubscriptionsManager.AlarmReceiver"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.mevinod.brandon.SubscriptionsManager.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -32,10 +32,10 @@
         </activity>
 
         <activity
-            android:name=".NewSubscriptionActivity"
+            android:name="com.mevinod.brandon.SubscriptionsManager.NewSubscriptionActivity"
             android:label="@string/new_subscription_activity_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName="com.example.brandon.SubscriptionsManager.MainActivity">
+            android:parentActivityName="com.mevinod.brandon.SubscriptionsManager.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -47,24 +47,24 @@
         </activity>
 
         <activity
-            android:name=".EditSubscriptionActivity"
+            android:name="com.mevinod.brandon.SubscriptionsManager.EditSubscriptionActivity"
             android:label="@string/edit_subscription_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="com.mevinod.brandon.SubscriptionsManager.MainActivity">
         </activity>
 
         <activity
-            android:name=".CustomSubscriptionActivity"
+            android:name="com.mevinod.brandon.SubscriptionsManager.CustomSubscriptionActivity"
             android:label="@string/add_subscription_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".NewSubscriptionActivity">
+            android:parentActivityName="com.mevinod.brandon.SubscriptionsManager.NewSubscriptionActivity">
         </activity>
 
         <activity
-            android:name=".TemplateSubscriptionActivity"
+            android:name="com.mevinod.brandon.SubscriptionsManager.TemplateSubscriptionActivity"
             android:label="@string/add_subscription_title"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".NewSubscriptionActivity">
+            android:parentActivityName="com.mevinod.brandon.SubscriptionsManager.NewSubscriptionActivity">
         </activity>
 
 

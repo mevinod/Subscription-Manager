@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "com.example.brandon.SubscriptionsManager"
+        applicationId "com.mevinod.brandon.SubscriptionsManager"
         minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
@@ -14,6 +14,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,5 +27,7 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     compile 'org.jetbrains:annotations-java5:15.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+
+
+
 }

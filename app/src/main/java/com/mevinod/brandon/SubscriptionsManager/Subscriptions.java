@@ -1,4 +1,4 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.mevinod.brandon.SubscriptionsManager.R;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

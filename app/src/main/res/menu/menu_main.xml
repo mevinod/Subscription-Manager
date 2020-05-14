@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.brandon.SubscriptionsManager.MainActivity">
+    tools:context="com.mevinod.brandon.SubscriptionsManager.com.mevinod.brandon.SubscriptionsManager.MainActivity">
 
     <item
         android:id="@+id/action_info_outline"

@@ -1,4 +1,4 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.mevinod.brandon.SubscriptionsManager.R;
 
 public class MainActivity extends AppCompatActivity {
 

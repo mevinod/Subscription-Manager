@@ -1,10 +1,12 @@
-package com.example.brandon.SubscriptionsManager;
+package com.mevinod.brandon.SubscriptionsManager;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
+
+import com.mevinod.brandon.SubscriptionsManager.R;
 
 import org.jetbrains.annotations.NotNull;
 

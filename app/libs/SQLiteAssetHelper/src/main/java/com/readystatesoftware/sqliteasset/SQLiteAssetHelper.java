@@ -45,7 +45,7 @@ import java.util.zip.ZipInputStream;
  * implementations to defer opening and upgrading the database until first use,
  * to avoid blocking application startup with long-running database upgrades.
  *
- * <p>For examples see <a href="https://github.com/jgilfelt/android-sqlite-asset-helper">
+ * <p>For mevinods see <a href="https://github.com/jgilfelt/android-sqlite-asset-helper">
  * https://github.com/jgilfelt/android-sqlite-asset-helper</a>
  *
  * <p class="note"><strong>Note:</strong> this class assumes
