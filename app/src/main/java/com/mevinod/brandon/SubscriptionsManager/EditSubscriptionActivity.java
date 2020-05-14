@@ -109,7 +109,7 @@ public class EditSubscriptionActivity extends ActionBarActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if(charSequence.length() != 0) {
                         try {
-                            if (charSequence.charAt(0) != '$') {
+                            if (charSequence.charAt(0) != '0') {
                                 BigDecimal value = new BigDecimal(charSequence.toString());
                                 subscription.setAmount(value);
                                 subscription.fillOutView(subscriptionView, fontAwesome);
